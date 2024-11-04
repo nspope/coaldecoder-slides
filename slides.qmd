@@ -1,5 +1,5 @@
 ---
-title: "Inferring demographic models from ARGs"
+title: "Inferring demographic models from ARGs with coalescence rates"
 author: "Nate Pope"
 format: 
   revealjs:
