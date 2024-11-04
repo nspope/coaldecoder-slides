@@ -1,0 +1,86 @@
+---
+title: "Inferring demographic models from ARGs"
+author: "Nate Pope"
+format: 
+  revealjs:
+    theme: white
+---
+
+## Coalescence time distributions
+
+::: {.r-stack}
+
+![](fig/tree-ecdf/tree-0.png){.fragment}
+
+![](fig/tree-ecdf/tree-1.png){.fragment}
+
+![](fig/tree-ecdf/tree-ecdf-0.png){.fragment}
+
+![](fig/tree-ecdf/tree-ecdf-1.png){.fragment}
+
+![](fig/tree-ecdf/tree-ecdf-2.png){.fragment}
+
+![](fig/tree-ecdf/tree-ecdf-3.png){.fragment}
+
+![](fig/tree-ecdf/tree-ecdf-4.png){.fragment}
+
+![](fig/tree-ecdf/tree-ecdf-5.png){.fragment}
+
+:::
+
+
+## Marginalizing over trees
+
+::: {.r-stack}
+
+:::
+
+
+::: {.notes}
+
+- Information is sparse in a single tree, especially deep in time; the major jumps in this ECDF occur over only a few nodes
+
+:::
+
+
+## Pair coalescence and structure
+
+::: {.r-stack}
+
+![](fig/pair-coal-rates/model.png){.fragment}
+
+![](fig/pair-coal-rates/rates-0.png){.fragment}
+
+![](fig/pair-coal-rates/rates-1.png){.fragment}
+
+![](fig/pair-coal-rates/rates-2.png){.fragment}
+
+![](fig/pair-coal-rates/rates-3.png){.fragment}
+
+![](fig/pair-coal-rates/rates-smooth.gif){.fragment}
+
+:::
+
+
+::: {.notes}
+
+TODO:
+
+- Show slide with only "observed rates"
+
+- Then slide with also "expected rates", model
+
+- Gradient
+
+- Optimization animation
+
+:::
+
+
+## Trio coalescence rates
+
+::: {.r-stack}
+
+![](fig/pair-coal-rates/model.png){.fragment}
+
+:::
