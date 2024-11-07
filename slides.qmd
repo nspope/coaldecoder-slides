@@ -1,30 +1,38 @@
 ---
-title: "Inferring demographic models from ARGs with coalescence rates"
+title: "Inferring complex demographic histories from coalescence time distributions"
 author: "Nate Pope"
+affiliation: "University of Oregon"
+email: "natep@uoregon.edu"
+venue: "PhyloSeminar"
+date: "12 Nov 2024"
+date-format: "MMM D, YYYY"
 format: 
   revealjs:
     theme: white
+    template-partials:
+      - title-slide.html
 ---
+
 
 ## Coalescence time distributions
 
 ::: {.r-stack}
 
-![](fig/tree-ecdf/tree-0.png){.fragment}
+![](fig/tree-ecdf/tree-0.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-1.png){.fragment}
+![](fig/tree-ecdf/tree-1.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-ecdf-0.png){.fragment}
+![](fig/tree-ecdf/tree-ecdf-0.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-ecdf-1.png){.fragment}
+![](fig/tree-ecdf/tree-ecdf-1.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-ecdf-2.png){.fragment}
+![](fig/tree-ecdf/tree-ecdf-2.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-ecdf-3.png){.fragment}
+![](fig/tree-ecdf/tree-ecdf-3.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-ecdf-4.png){.fragment}
+![](fig/tree-ecdf/tree-ecdf-4.png){.fragment .current-visible}
 
-![](fig/tree-ecdf/tree-ecdf-5.png){.fragment}
+![](fig/tree-ecdf/tree-ecdf-5.png){.fragment .current-visible}
 
 :::
 
@@ -33,12 +41,144 @@ format:
 
 ::: {.r-stack}
 
-:::
+![](fig/marg-ecdf/marg-ecdf-0.png){.fragment .current-visible}
 
+![](fig/marg-ecdf/marg-ecdf-1.png){.fragment .current-visible}
+
+![](fig/marg-ecdf/marg-ecdf-2.png){.fragment .current-visible}
+
+![](fig/marg-ecdf/marg-ecdf-3.png){.fragment .current-visible}
+
+:::
 
 ::: {.notes}
 
-- Information is sparse in a single tree, especially deep in time; the major jumps in this ECDF occur over only a few nodes
+- Information is sparse in a single tree, especially deep in time, hence we use the ARG.
+
+- The ECDF is a deterministic function of a tree. Integrating over trees gives the true CDF.
+
+- The empirical version sums over trees, weighting by relative span.
+
+- The weighted average converges to true CDF asymptotically
+
+- TODO: node weights (probably?), convergence (?)
+
+:::
+
+
+## Efficient marginalization
+
+::: {.r-stack}
+
+![](fig/incr-algo/two-trees-0.png){.fragment .current-visible}
+
+![](fig/incr-algo/two-trees-1.png){.fragment .current-visible}
+
+![](fig/incr-algo/two-trees-2.png){.fragment .current-visible}
+
+![](fig/incr-algo/left-tree-detail-0.png){.fragment .current-visible}
+
+![](fig/incr-algo/left-tree-detail-1.png){.fragment .current-visible}
+
+![](fig/incr-algo/left-tree-detail-2.png){.fragment .current-visible}
+
+![](fig/incr-algo/left-tree-detail-3.png){.fragment .current-visible}
+
+![](fig/incr-algo/left-tree-detail-4.png){.fragment .current-visible}
+
+![](fig/incr-algo/left-tree-detail-5.png){.fragment .current-visible}
+
+![](fig/incr-algo/right-tree-detail-0.png){.fragment .current-visible}
+
+:::
+
+::: {.notes}
+
+- Need to leverage redundancy of trees for efficiency
+
+- Work with the TreeSequence data format, tskit library
+
+- Crucial ingredient are "edge differences" between adjacent trees
+
+- e.g. a prune-regraft of a single branch leaves the bulk of the topology unchanged
+
+- The idea is to propagate changes in node state up from the removed/added edge
+
+- If there are multiple edges removed/added, need to be careful about order
+
+- Complexity is O(edges log tips) to get node weights, querying ECDF is binary search O(log nodes)
+
+- TODO: plot showing scaling with number of tips
+
+:::
+
+
+## Duality of pair coalescence and Ne
+
+::: {.r-stack}
+
+![](fig/ne-duality/size-to-coal-0.png){.fragment .current-visible}
+
+![](fig/ne-duality/size-to-coal-1.png){.fragment .current-visible}
+
+![](fig/ne-duality/size-to-coal-2.png){.fragment .current-visible}
+
+![](fig/ne-duality/size-to-coal-3.png){.fragment .current-visible}
+
+![](fig/ne-duality/size-to-coal-4.png){.fragment .current-visible}
+
+![](fig/ne-duality/size-to-coal-5.png){.fragment .current-visible}
+
+:::
+
+
+## Duality of pair coalescence and Ne
+
+::: {.fragment}
+Let $c_{ab} = \frac{\int_a^b c(t) dt}{b - a}$ be average rate over interval,
+:::
+
+::: {.r-stack}
+
+::: {.fragment .current-visible}
+$$
+  1 - \exp\{ -(b - a) c_{ab} \} = \frac{\mathrm{CDF}(b) - \mathrm{CDF}(a)}{1 - \mathrm{CDF}(a)} 
+$$
+:::
+
+::: {.fragment .current-visible}
+$$
+  1 - \exp\{ -(b - a) c_{ab} \} \approx \frac{\mathrm{ECDF}(b) - \mathrm{ECDF}(a)}{1 - \mathrm{ECDF}(a)}
+$$
+:::
+
+::: {.fragment .current-visible}
+$$
+  c_{ab} \approx (a - b)^{-1} \log \left\{ 1 - \frac{\mathrm{ECDF}(b) - \mathrm{ECDF}(a)}{1 - \mathrm{ECDF}(a)} \right\}
+$$
+:::
+
+::: {.fragment}
+$$
+  c_{ab} \approx (b - a)^{-1} \left(\frac{\mathrm{ECDF}(b) - \mathrm{ECDF}(a)}{1 - \mathrm{ECDF}(a)} \right)
+$$
+:::
+
+:::
+
+::: {.fragment}
+Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
+:::
+
+
+## Duality of pair coalescence and Ne
+
+
+::: {.r-stack}
+
+![](fig/ne-duality/size-to-coal-6.png){.fragment .current-visible}
+
+![](fig/ne-duality/size-to-coal-7.png){.fragment .current-visible}
 
 :::
 
@@ -47,30 +187,32 @@ format:
 
 ::: {.r-stack}
 
-![](fig/pair-coal-rates/model.png){.fragment}
+![](fig/pair-coal-rates/model.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-0.png){.fragment}
+![](fig/pair-coal-rates/rates-0.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-1.png){.fragment}
+![](fig/pair-coal-rates/rates-1.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-2.png){.fragment}
+![](fig/pair-coal-rates/rates-2.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-3.png){.fragment}
+![](fig/pair-coal-rates/rates-3.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-smooth.gif){.fragment}
+![](fig/pair-coal-rates/rates-smooth.gif){.fragment .current-visible}
+
+![](fig/pair-coal-rates/rates-optim.gif){.fragment .current-visible}
 
 :::
 
 
 ::: {.notes}
 
-TODO:
+TODO: after "rates-smooth.gif"
 
 - Show slide with only "observed rates"
 
-- Then slide with also "expected rates", model
+- Then slide with also "expected rates", candidate model
 
-- Gradient
+- Show gradient on candidate model
 
 - Optimization animation
 
@@ -81,6 +223,6 @@ TODO:
 
 ::: {.r-stack}
 
-![](fig/pair-coal-rates/model.png){.fragment}
+![](fig/pair-coal-rates/model.png){.fragment .current-visible}
 
 :::
