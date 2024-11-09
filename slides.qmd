@@ -13,6 +13,48 @@ format:
       - title-slide.html
 ---
 
+## Demographic inference
+
+::: {.r-stack}
+
+![](fig/pop-model/pop-model-0.png){.fragment .current-visible width="50%" fig-align="center"}
+
+![](fig/pop-model/pop-model-1.png){.fragment .current-visible width="50%" fig-align="center"}
+
+![](fig/pop-model/intgr-anim-0.gif){.fragment .current-visible width="50%" fig-align="center"}
+
+:::
+
+TODO
+
+
+## Ancestral recombination graphs
+
+::: {.r-stack}
+
+![](fig/arg-3d/arg-3d-0.png){.fragment .current-visible}
+
+![](fig/arg-3d/arg-3d-1.png){.fragment .current-visible}
+
+![](fig/arg-3d/arg-3d-2.png){.fragment .current-visible}
+
+![](fig/arg-3d/arg-3d-3.png){.fragment .current-visible}
+
+![](fig/arg-3d/arg-3d-4.png){.fragment .current-visible}
+
+:::
+
+::: {.notes}
+
+- TODO: haplotype view of ARG? text needed?
+
+:::
+
+
+## Demographic inference from large sequences
+
+TODO
+
 
 ## Coalescence time distributions
 
@@ -108,6 +150,8 @@ format:
 
 - Complexity is O(edges log tips) to get node weights, querying ECDF is binary search O(log nodes)
 
+- TODO: expository text, e.g. "Number of subtended samples S"
+
 - TODO: plot showing scaling with number of tips
 
 :::
@@ -187,26 +231,26 @@ Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
 
 ::: {.r-stack}
 
-![](fig/pair-coal-rates/model.png){.fragment .current-visible}
+![](fig/pair-rates/pair-rates-0.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-0.png){.fragment .current-visible}
+![](fig/pair-rates/pair-rates-1.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-1.png){.fragment .current-visible}
+![](fig/pair-rates/pair-rates-2.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-2.png){.fragment .current-visible}
+![](fig/pair-rates/pair-rates-3.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-3.png){.fragment .current-visible}
+![](fig/pair-rates/pair-rates-4.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-smooth.gif){.fragment .current-visible}
+![](fig/pair-rates/pair-rates-5.png){.fragment .current-visible}
 
-![](fig/pair-coal-rates/rates-optim.gif){.fragment .current-visible}
+![](fig/pair-rates/smooth-anim-0.gif){.fragment .current-visible}
 
 :::
 
 
 ::: {.notes}
 
-TODO: after "rates-smooth.gif"
+TODO: after "smooth-anim.gif"
 
 - Show slide with only "observed rates"
 
@@ -221,8 +265,10 @@ TODO: after "rates-smooth.gif"
 
 ## Trio coalescence rates
 
+TODO
+
 ::: {.r-stack}
 
-![](fig/pair-coal-rates/model.png){.fragment .current-visible}
+![](fig/pair-rates/trio-rates.png){.fragment .current-visible}
 
 :::
