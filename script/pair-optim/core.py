@@ -3,6 +3,9 @@ import tskit
 import os
 import pickle
 import nlopt
+import matplotlib
+import msprime
+
 from coaldecoder import TrioCoalescenceRateModel, PairCoalescenceRateModel
 from coaldecoder import TrioCoalescenceRates, PairCoalescenceRates
 
@@ -18,6 +21,7 @@ def rates_and_demography(
         pulse_mode=[2e4, 4e4], 
         pulse_sd=[1e3, 1e3], 
         pulse_on=[1e-4, 1e-3], 
+        #pulse_on=[5e-4, 2e-3], 
         pulse_off=[1e-6, 1.1e-6], 
         pairs_only=True,
     ):
@@ -50,7 +54,35 @@ def rates_and_demography(
     return np.diff(time_grid), expected_rates[subset], demographic_parameters[:2, :2]
 
 
-def optimize_island_model(target, weights, duration, starting_value, lower_bound, upper_bound, pairs_only=True, ftol_rel=1e-6):
+def to_msprime(time_step, seed=1, num_samples=50, sequence_length=2e7):
+    population_names = ["A", "B"]
+    *_, demographic_parameters = rates_and_demography(time_step)
+
+    demography = msprime.Demography()
+    for i, p in enumerate(population_names):
+        demography.add_population(initial_size=np.inf, name=p)
+
+    start_time = time_step[:-1]
+    demographic_parameters = demographic_parameters.transpose(2, 0, 1)
+    for M, t in zip(demographic_parameters, start_time):
+        for i, p in enumerate(population_names):
+            for j, q in enumerate(population_names):
+                if i == j:
+                    demography.add_population_parameters_change(time=t, initial_size=M[i, i] / 2, population=p)
+                else:
+                    demography.add_migration_rate_change(time=t, rate=M[i, j], source=p, dest=q)
+
+    ts = msprime.sim_ancestry(
+        samples={"A": num_samples, "B": num_samples},
+        demography=demography,
+        recombination_rate=1.15e-8,
+        sequence_length=sequence_length,
+        random_seed=seed,
+    )
+    return ts
+
+
+def optimize_island_model(target, weights, duration, starting_value, lower_bound, upper_bound, pairs_only=True, ftol_rel=1e-6, maxevals=0):
     assert np.logical_and(np.all(starting_value >= lower_bound), np.all(starting_value <= upper_bound))
 
     num_populations = starting_value.shape[0]
@@ -90,12 +122,13 @@ def optimize_island_model(target, weights, duration, starting_value, lower_bound
 
     # initialize trajectory with starting state
     objective(starting_value, np.zeros(starting_value.size))
+    print(f"Initial loss: {loss_trajectory[0]}")
 
     optimizer = nlopt.opt(nlopt.LD_LBFGS, starting_value.size)
     optimizer.set_max_objective(objective)
     optimizer.set_lower_bounds(lower_bound)
     optimizer.set_upper_bounds(upper_bound)
-    optimizer.set_maxeval(0)
+    optimizer.set_maxeval(int(maxevals))
     optimizer.set_vector_storage(50)
     optimizer.set_ftol_rel(ftol_rel)
     parameters = optimizer.optimize(starting_value)
@@ -225,3 +258,70 @@ def plot_model_fit(duration, params, rates, path, highlight=None, pairs_only=Tru
     fig.tight_layout()
     plt.savefig(path)
     plt.clf()
+
+
+# ---
+
+def plot_ne_step(ne_ax, duration, params, line_kwargs={}):
+    start = np.cumsum(np.append(0, duration))[:-1]
+    offset = 0.2
+    ne_ax.step(start / 1e3, params[0,0], label=r"$N_{A}$", color="dodgerblue", where="post", **line_kwargs)
+    ne_ax.step(start / 1e3 + offset, params[1,1], label=r"$N_{B}$", color="firebrick", where="post", **line_kwargs)
+    ne_ax.set_ylim(8e3, 8e5)
+    ne_ax.set_yscale('log')
+    ne_ax.set_ylabel("Fitted haploid $N_e$")
+    ne_ax.legend(ncol=2, loc='upper left')
+
+
+def plot_migr_step(mi_ax, duration, params, line_kwargs={}):
+    start = np.cumsum(np.append(0, duration))[:-1]
+    offset = 0.2
+    mi_ax.step(start / 1e3, params[0,1], label=r"$M_{A \rightarrow B}$", color="dodgerblue", where="post", **line_kwargs)
+    mi_ax.step(start / 1e3 + offset, params[1,0], label=r"$M_{B \rightarrow A}$", color="firebrick", where="post", **line_kwargs)
+    mi_ax.set_yscale('log')
+    mi_ax.set_ylabel("Fitted migration rate")
+    mi_ax.legend(ncol=1, loc='upper left')
+
+
+def plot_rates_step(ra_ax, duration, rates, pairs_only=True, colors=None, line_kwargs={}, make_legend=True, label_suffix="", offset=0.2):
+    start = np.cumsum(np.append(0, duration))[:-1]
+    rate_names = ["(A,A)", "(A,B)", "(B,B)"] if pairs_only else \
+        ["((A,A),A)", "((A,A),B)", "((A,B),A)", "((A,B),B)", "((B,B),A)", "((B,B),B)"]
+    if colors is None:
+        colors = matplotlib.rcParams['axes.prop_cycle'].by_key()['color']
+        colors = [colors[i % len(colors)] for i in range(len(rate_names))]
+    for i, label in enumerate(rate_names):
+        ra_ax.step(start / 1e3 + i * offset, rates[i], label=label + label_suffix, color=colors[i], where="post", **line_kwargs)
+    ra_ax.set_yscale('log')
+    ra_ax.set_ylabel("Pair coalescence rate")
+    if pairs_only:
+        ra_ax.set_ylabel("Pair coalescence rate")
+    else:
+        ra_ax.set_ylabel("Trio coalescence rate")
+    if make_legend:
+        ra_ax.legend(ncol=1, loc='lower right')
+
+def plot_rates_point(ra_ax, duration, rates, pairs_only=True, colors=None, point_kwargs={}, make_legend=True, label_suffix="", offset=0.2):
+    start = np.cumsum(np.append(0, duration))[:-1]
+    end = np.cumsum(duration)
+    mid = start / 2 + end / 2
+    rate_names = ["(A,A)", "(A,B)", "(B,B)"] if pairs_only else \
+        ["((A,A),A)", "((A,A),B)", "((A,B),A)", "((A,B),B)", "((B,B),A)", "((B,B),B)"]
+    if colors is None:
+        colors = matplotlib.rcParams['axes.prop_cycle'].by_key()['color']
+        colors = [colors[i % len(colors)] for i in range(len(rate_names))]
+    points = []
+    for i, label in enumerate(rate_names):
+        #ra_ax.step(start / 1e3 + offset * i, rates[i], label=label + label_suffix, color=colors[i], where="post")
+        pts = ra_ax.scatter(mid / 1e3 + offset * i, rates[i], label=label + label_suffix, c=colors[i], **point_kwargs)
+        #points.append(pts)
+    if make_legend:
+        labs = [nm + label_suffix for nm in rate_names]
+        ra_ax.legend(labs, ncol=1, loc='lower right')
+
+
+def add_highlight(axs, highlight):
+    rect = matplotlib.patches.Rectangle((highlight[0], 1e-30), highlight[1] - highlight[0], 1e30, fc = 'gray', alpha=0.3)
+    if highlight is not None:
+        axs.add_patch(rect)
+    return rect

@@ -359,34 +359,53 @@ Nov 12, 2024
 <div class="r-stack">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="fig/pop-model/pop-model-0.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="fig/pop-model/pop-model-0.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%" data-fragment-index="0"></p>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="fig/pop-model/pop-model-1.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="fig/pop-model/pop-model-1.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%" data-fragment-index="1"></p>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="fig/pop-model/intgr-anim-0.gif" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="fig/pop-model/pop-model-2.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%" data-fragment-index="2"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/pop-model/pop-model-3.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%" data-fragment-index="3"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/pop-model/intgr-anim-0.gif" class="fragment quarto-figure quarto-figure-center" style="width:50.0%" data-fragment-index="4"></p>
 </figure>
 </div>
 </div>
-<p>TODO</p>
-</section>
-<section id="ancestral-recombination-graphs" class="slide level2">
-<h2>Ancestral recombination graphs</h2>
 <div class="r-stack">
-<p><img data-src="fig/arg-3d/arg-3d-0.png" class="fragment current-visible"></p>
-<p><img data-src="fig/arg-3d/arg-3d-1.png" class="fragment current-visible"></p>
-<p><img data-src="fig/arg-3d/arg-3d-2.png" class="fragment current-visible"></p>
-<p><img data-src="fig/arg-3d/arg-3d-3.png" class="fragment current-visible"></p>
-<p><img data-src="fig/arg-3d/arg-3d-4.png" class="fragment current-visible"></p>
+<div class="fragment current-visible" data-fragment-index="0">
+<p>Given some population model, <span class="math inline">\(\Theta\)</span></p>
+</div>
+<div class="fragment current-visible" data-fragment-index="1">
+<p><span class="math inline">\(P(\mathrm{genealogy} \mid \Theta)\)</span></p>
+</div>
+<div class="fragment current-visible" data-fragment-index="2">
+<p>Given some mutations, <span class="math inline">\(m\)</span></p>
+</div>
+<div class="fragment current-visible" data-fragment-index="3">
+<p><span class="math inline">\(p(m \mid \mathrm{genealogy})\)</span></p>
+</div>
+<div class="fragment current-visible" data-fragment-index="4">
+<p><span class="math inline">\(p(m \mid \Theta) = \int p(m \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid \Theta)\)</span></p>
+</div>
+<div class="fragment current-visible" data-fragment-index="5">
+<p>Inference <span class="math inline">\(\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)\)</span></p>
+</div>
 </div>
 <aside class="notes">
 <ul>
-<li>TODO: haplotype view of ARG? text needed?</li>
+<li>In a nutshell</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -400,9 +419,48 @@ Nov 12, 2024
           display:block!important;
       }</style></aside>
 </section>
-<section id="demographic-inference-from-large-sequences" class="slide level2">
-<h2>Demographic inference from large sequences</h2>
-<p>TODO</p>
+<section id="ancestral-recombination-graphs" class="slide level2">
+<h2>Ancestral recombination graphs</h2>
+<div class="r-stack">
+<p><img data-src="fig/arg-3d/arg-3d-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/arg-3d-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/arg-3d-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/arg-3d-3.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/arg-3d-4.png" class="fragment current-visible"></p>
+</div>
+<aside class="notes">
+<ul>
+<li><p>Haplotypes along recombinant sequence of length L</p></li>
+<li><p>Single point on sequence, gives genealogy</p></li>
+<li><p>Recombination event results in prune/regraft of leaf</p></li>
+<li><p>Recombination event results in prune/regraft of root</p></li>
+<li><p>Crucial point is, nodes are shared across trees, e.g.&nbsp;ancestral haplotypes</p></li>
+<li><p>TODO: highlight edge</p></li>
+<li><p>TODO: haplotype view of ARG? text needed?</p></li>
+<li><p>Takeaway, space of ARGs is huge, integrating over it is hard</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="inference-at-genomic-scale" class="slide level2">
+<h2>Inference at genomic scale</h2>
+<div>
+<ul>
+<li class="fragment"><p>Reduce to haploid pair and integrate ARG (PSMC, etc.)</p></li>
+<li class="fragment"><p>Fit “marginal” statistics (SFS, LD, etc.)</p></li>
+<li class="fragment"><p>Jointly infer ARG and demography (MCMC)</p></li>
+<li class="fragment"><p>Condition on inferred ARG and … ?</p></li>
+</ul>
+</div>
 </section>
 <section id="coalescence-time-distributions" class="slide level2">
 <h2>Coalescence time distributions</h2>
@@ -468,6 +526,7 @@ Nov 12, 2024
 <li><p>The idea is to propagate changes in node state up from the removed/added edge</p></li>
 <li><p>If there are multiple edges removed/added, need to be careful about order</p></li>
 <li><p>Complexity is O(edges log tips) to get node weights, querying ECDF is binary search O(log nodes)</p></li>
+<li><p>TODO: expository text, e.g.&nbsp;“Number of subtended samples S”</p></li>
 <li><p>TODO: plot showing scaling with number of tips</p></li>
 </ul>
 <style type="text/css">
@@ -530,25 +589,9 @@ Nov 12, 2024
 <p><img data-src="fig/ne-duality/size-to-coal-6.png" class="fragment current-visible"></p>
 <p><img data-src="fig/ne-duality/size-to-coal-7.png" class="fragment current-visible"></p>
 </div>
-</section>
-<section id="pair-coalescence-and-structure" class="slide level2">
-<h2>Pair coalescence and structure</h2>
-<div class="r-stack">
-<p><img data-src="fig/pair-rates/pair-rates-0.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-rates/pair-rates-1.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-rates/pair-rates-2.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-rates/pair-rates-3.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-rates/pair-rates-4.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-rates/pair-rates-5.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-rates/smooth-anim-0.gif" class="fragment current-visible"></p>
-</div>
 <aside class="notes">
-<p>TODO: after “smooth-anim.gif”</p>
 <ul>
-<li><p>Show slide with only “observed rates”</p></li>
-<li><p>Then slide with also “expected rates”, candidate model</p></li>
-<li><p>Show gradient on candidate model</p></li>
-<li><p>Optimization animation</p></li>
+<li>Ne from coalescence rates from ARG isn’t a new idea, cite Relate and maybe Yun’s paper. Though maybe estimators are different</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -562,12 +605,101 @@ Nov 12, 2024
           display:block!important;
       }</style></aside>
 </section>
-<section id="trio-coalescence-rates" class="slide level2">
-<h2>Trio coalescence rates</h2>
-<p>TODO</p>
+<section id="pair-coalescence-and-structure" class="slide level2">
+<h2>Pair coalescence and structure</h2>
+<p>TODO theory</p>
+</section>
+<section id="pair-coalescence-and-structure-1" class="slide level2">
+<h2>Pair coalescence and structure</h2>
 <div class="r-stack">
-<p><img data-src="fig/pair-rates/trio-rates.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-rates-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-rates-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-rates-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-rates-3.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-rates-4.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-rates-5.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/smooth-anim-0.gif" class="fragment current-visible"></p>
 </div>
+</section>
+<section id="inverse-problem" class="slide level2">
+<h2>Inverse problem</h2>
+<div class="r-stack">
+<p><img data-src="fig/pair-rates/pair-optim-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-optim-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-optim-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/pair-optim-3.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-rates/smooth-optim-anim-0.gif" class="fragment current-visible"></p>
+</div>
+<aside class="notes">
+<ul>
+<li><p>The big question is, “is it identifiable”</p></li>
+<li><p>Which in some sense reflects whether the loss surface is amenable to gradient descent</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="fitting-to-empirical-rates" class="slide level2">
+<h2>Fitting to empirical rates</h2>
+<div class="r-stack">
+<p><img data-src="fig/pair-optim/emp-rates-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-rates-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-rates-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-rates-3.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-trio-rates-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-trio-rates-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-trio-rates-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/pair-optim/emp-trio-rates-3.png" class="fragment current-visible"></p>
+</div>
+<aside class="notes">
+<ul>
+<li><p>This generalizes readily to more than two populations</p></li>
+<li><p>Using both first and second coalescences of trios (12 stats)</p></li>
+<li><p>In this case trio and pair rates look quite similar</p></li>
+<li><p>But provide more “observations” of the same pattern and are less sensitive to noise</p></li>
+<li><p>With more populations, using trio rates matters more as it generates non-redundant statistics</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="fitting-to-inferred-rates" class="slide level2">
+<h2>Fitting to inferred rates</h2>
+<aside class="notes">
+<ul>
+<li><p>This machinery can easily be extended to more constrained settings, e.g.&nbsp;multiple rates per epoch, or parameterized functions</p></li>
+<li><p>Example is a little disingenuous, b/c noise in ARG inference will swamp out detail at that temporal scale</p></li>
+<li><p>For example, true vs inferred dates</p></li>
+<li><p>So as a litmus test i’m going to use a model on a log scale. The litmus test here is to infer the directionality of migration</p></li>
+<li><p>SINGER works great, blah blah</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 

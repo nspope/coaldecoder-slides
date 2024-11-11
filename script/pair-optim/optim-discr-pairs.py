@@ -15,16 +15,30 @@ matplotlib.rc('text.latex', preamble=r'\usepackage{amsmath} \usepackage{amsfonts
 # ----------- #
 output_dir = "../../fig/pair-optim/"
 if not os.path.exists(output_dir): os.makedirs(output_dir)
-force_overwrite = True #False
+force_overwrite = False
 pairs_only = True
 grid_size = 50
-trim_to = 1e7
+trim_to = 1e8
 
+time_grid = np.linspace(0, 5e4, grid_size)
+
+x_min = 0
+x_max = 50
+y_min_ne = 8e3
+y_max_ne = 8e5
+y_min_mi = 1e-7
+y_max_mi = 3e-3
+y_min_ra = 1e-8 if pairs_only else 1e-12
+y_max_ra = 2e-4 if pairs_only else 1e-4
 
 #--------- get rates, etc.
 
-time_grid = np.linspace(0, 5e4, grid_size)
-ts = tskit.load("/sietch_colab/natep/trio-coal/sims/osc/oscillating_1.ts")
+ts_store = "tmp.trees"
+if not os.path.exists(ts_store):
+    ts = to_msprime(time_grid, sequence_length=1e8)
+    ts.dump(ts_store)
+else:
+    ts = tskit.load(ts_store)
 ts = ts.keep_intervals([[0, trim_to]]).trim()
 
 rate_store = "tmp.pair_rates.p"
@@ -38,16 +52,74 @@ else:
 traj_store = "tmp.pair_fit.p"
 if not os.path.exists(traj_store) or force_overwrite:
     emp_params_fit, emp_rates_fit, emp_opt_traj = optimize_island_model(emp_rates, 1./std_rates, duration, *initial_values(params), pairs_only=pairs_only)
-    params_fit, rates_fit, opt_traj = optimize_island_model(rates, 1./std_rates, duration, *initial_values(params), pairs_only=pairs_only, ftol_rel=1e-4)
+    params_fit, rates_fit, opt_traj = optimize_island_model(rates, 1./std_rates, duration, *initial_values(params), pairs_only=pairs_only, ftol_rel=1e-5, maxevals=1e4)
     pickle.dump((params_fit, rates_fit, opt_traj, emp_params_fit, emp_rates_fit, emp_opt_traj), open(traj_store, "wb"))
 else:
     params_fit, rates_fit, opt_traj, emp_params_fit, emp_rates_fit, emp_opt_traj = pickle.load(open(traj_store, "rb"))
 
 
+# --- plot observed rates only
+
+fig = plt.figure(figsize=(8, 4))#, constrained_layout=True)
+fig.supxlabel("Thousands of generations in past")
+
+ne_ax = plt.subplot2grid((2, 2), (0, 0))
+ne_ax.set_ylim(y_min_ne, y_max_ne)
+ne_ax.set_xlim(x_min, x_max)
+ne_ax.set_yscale('log')
+
+mi_ax = plt.subplot2grid((2, 2), (1, 0))
+mi_ax.set_ylim(y_min_mi, y_max_mi)
+mi_ax.set_xlim(x_min, x_max)
+mi_ax.set_yscale('log')
+
+ra_ax = plt.subplot2grid((2, 2), (0, 1), rowspan=2)
+ra_ax.set_ylim(y_min_ra, y_max_ra)
+ra_ax.set_xlim(x_min, x_max)
+ra_ax.set_yscale('log')
+
+# plot discretized true rates only
+plot_ne_step(ne_ax, duration, params_fit)
+plot_migr_step(mi_ax, duration, params_fit)
+plot_rates_step(ra_ax, duration, rates, pairs_only=True, line_kwargs={}, label_suffix=" from true")
+fig.tight_layout()
+ne_ax.set_visible(False)
+mi_ax.set_visible(False)
+plt.savefig(output_dir + "emp-rates-0.png")
+
+# with fitted trajectory
+ne_ax.set_visible(True)
+mi_ax.set_visible(True)
+plt.savefig(output_dir + "emp-rates-1.png")
+
+# plot discr true rates with observed rates
+for art in list(ne_ax.lines): art.remove()
+for art in list(mi_ax.lines): art.remove()
+for art in list(ra_ax.lines): art.remove()
+ne_ax.get_legend().remove()
+mi_ax.get_legend().remove()
+ra_ax.get_legend().remove()
+plot_ne_step(ne_ax, duration, emp_params_fit)
+plot_migr_step(mi_ax, duration, emp_params_fit)
+plot_rates_point(ra_ax, duration, emp_rates, pairs_only=True, label_suffix=" from ecdf", point_kwargs={"s" : 6})
+plot_rates_step(ra_ax, duration, rates, pairs_only=True, line_kwargs={"alpha" : 0.2}, make_legend=False, label_suffix=" from true")
+ne_ax.set_visible(False)
+mi_ax.set_visible(False)
+plt.savefig(output_dir + "emp-rates-2.png")
+
+ne_ax.set_visible(True)
+mi_ax.set_visible(True)
+plt.savefig(output_dir + "emp-rates-3.png")
+
+assert False
+
+
+# --- DELETEME --- #
+
 # --- look at optimized model
 
-plot_model_fit(duration, params_fit, rates_fit, path=output_dir + "optim-discr-pair-0.png", pairs_only=pairs_only)
-plot_model_fit(duration, emp_params_fit, emp_rates_fit, path=output_dir + "optim-discr-pair-1.png", pairs_only=pairs_only)
+plot_model_fit(duration, params_fit, rates_fit, path=output_dir + "optim-discr-0.png", pairs_only=pairs_only)
+plot_model_fit(duration, emp_params_fit, emp_rates_fit, path=output_dir + "optim-discr-1.png", pairs_only=pairs_only)
 
 assert False
 

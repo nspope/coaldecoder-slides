@@ -107,13 +107,25 @@ l3[5].set_color("black") # reset
 
 # ancestral haplotypes
 dashes=(2,1)
+haplo = []
 for i in [4, 5, 6]:
-    ax.plot((xmin, x1[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln, *_ = ax.plot((xmin, x1[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    haplo.append(ln)
 for i in [4, 6]:
-    ax.plot((x1[i], x2[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln, *_ = ax.plot((x1[i], x2[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    haplo.append(ln)
 for i in [4, 8]:
-    ax.plot((x2[i], x3[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln, *_ = ax.plot((x2[i], x3[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    haplo.append(ln)
 for i in [4, 8, 9]:
-    ax.plot((x3[i], xmax), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln, *_ = ax.plot((x3[i], xmax), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    haplo.append(ln)
 
 plt.savefig(out_dir + "arg-3d-4.png", bbox_inches=bbox)
+
+# colored edge
+xedge = [x0[4], x0[6], x1[6], x1[4]] 
+yedge = [y[4], y[6], y[6], y[4]]
+zedge = [z[4], z[6], z[6], z[4]]
+ax.plot_surface(xedge, yedge, zedge, color="firebrick", alpha=0.5)
+plt.savefig(out_dir + "arg-3d-5.png", bbox_inches=bbox)

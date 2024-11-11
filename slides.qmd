@@ -17,15 +17,51 @@ format:
 
 ::: {.r-stack}
 
-![](fig/pop-model/pop-model-0.png){.fragment .current-visible width="50%" fig-align="center"}
+![](fig/pop-model/pop-model-0.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=0}
 
-![](fig/pop-model/pop-model-1.png){.fragment .current-visible width="50%" fig-align="center"}
+![](fig/pop-model/pop-model-1.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=1}
 
-![](fig/pop-model/intgr-anim-0.gif){.fragment .current-visible width="50%" fig-align="center"}
+![](fig/pop-model/pop-model-2.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=2}
+
+![](fig/pop-model/pop-model-3.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=3}
+
+![](fig/pop-model/intgr-anim-0.gif){.fragment width="50%" fig-align="center" fragment-index=4}
 
 :::
 
-TODO
+::: {.r-stack} 
+
+::: {.fragment .current-visible fragment-index=0}
+Given some population model, $\Theta$
+:::
+
+::: {.fragment .current-visible fragment-index=1}
+$P(\mathrm{genealogy} \mid \Theta)$
+:::
+
+::: {.fragment .current-visible fragment-index=2}
+Given some mutations, $m$
+:::
+
+::: {.fragment .current-visible fragment-index=3}
+$p(m \mid \mathrm{genealogy})$
+:::
+
+::: {.fragment .current-visible fragment-index=4}
+$p(m \mid \Theta) = \int p(m \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid \Theta)$
+:::
+
+::: {.fragment .current-visible fragment-index=5}
+Inference $\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)$
+:::
+
+:::
+
+::: {.notes}
+
+- In a nutshell
+
+:::
 
 
 ## Ancestral recombination graphs
@@ -46,14 +82,38 @@ TODO
 
 ::: {.notes}
 
+- Haplotypes along recombinant sequence of length L
+
+- Single point on sequence, gives genealogy
+
+- Recombination event results in prune/regraft of leaf
+
+- Recombination event results in prune/regraft of root
+
+- Crucial point is, nodes are shared across trees, e.g. ancestral haplotypes
+
+- TODO: highlight edge
+
 - TODO: haplotype view of ARG? text needed?
+
+- Takeaway, space of ARGs is huge, integrating over it is hard
 
 :::
 
 
-## Demographic inference from large sequences
+## Inference at genomic scale
 
-TODO
+::: {.incremental}
+
+- Reduce to haploid pair and integrate ARG (PSMC, etc.)
+
+- Fit "marginal" statistics (SFS, LD, etc.)
+
+- Jointly infer ARG and demography (MCMC)
+
+- Condition on inferred ARG and ... ?
+
+:::
 
 
 ## Coalescence time distributions
@@ -226,6 +286,17 @@ Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
 
 :::
 
+::: {.notes}
+
+- Ne from coalescence rates from ARG isn't a new idea, cite Relate and maybe Yun's paper. Though maybe estimators are different
+
+:::
+
+
+## Pair coalescence and structure
+
+TODO theory
+
 
 ## Pair coalescence and structure
 
@@ -247,28 +318,82 @@ Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
 
 :::
 
+## Inverse problem
+
+::: {.r-stack}
+
+![](fig/pair-rates/pair-optim-0.png){.fragment .current-visible}
+
+![](fig/pair-rates/pair-optim-1.png){.fragment .current-visible}
+
+![](fig/pair-rates/pair-optim-2.png){.fragment .current-visible}
+
+![](fig/pair-rates/pair-optim-3.png){.fragment .current-visible}
+
+![](fig/pair-rates/smooth-optim-anim-0.gif){.fragment .current-visible}
+
+:::
 
 ::: {.notes}
 
-TODO: after "smooth-anim.gif"
+- The big question is, "is it identifiable"
 
-- Show slide with only "observed rates"
-
-- Then slide with also "expected rates", candidate model
-
-- Show gradient on candidate model
-
-- Optimization animation
+- Which in some sense reflects whether the loss surface is amenable to gradient descent
 
 :::
 
 
-## Trio coalescence rates
-
-TODO
+## Fitting to empirical rates
 
 ::: {.r-stack}
 
-![](fig/pair-rates/trio-rates.png){.fragment .current-visible}
+![](fig/pair-optim/emp-rates-0.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-rates-1.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-rates-2.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-rates-3.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-trio-rates-0.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-trio-rates-1.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-trio-rates-2.png){.fragment .current-visible}
+
+![](fig/pair-optim/emp-trio-rates-3.png){.fragment .current-visible}
+
+:::
+
+::: {.notes}
+
+- This generalizes readily to more than two populations
+
+- Using both first and second coalescences of trios (12 stats)
+
+- In this case trio and pair rates look quite similar
+
+- But provide more "observations" of the same pattern
+  and are less sensitive to noise
+
+- With more populations, using trio rates matters more as it generates
+  non-redundant statistics
+
+:::
+
+
+## Fitting to inferred rates
+
+::: {.notes}
+
+- This machinery can easily be extended to more constrained settings, e.g. multiple rates per epoch, or parameterized functions
+
+- Example is a little disingenuous, b/c noise in ARG inference will swamp out detail at that temporal scale
+
+- For example, true vs inferred dates
+
+- So as a litmus test i'm going to use a model on a log scale. The litmus test here is to infer the directionality of migration
+
+- SINGER works great, blah blah
 
 :::
