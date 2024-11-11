@@ -15,7 +15,7 @@ matplotlib.rc('text.latex', preamble=r'\usepackage{amsmath} \usepackage{amsfonts
 # ----------- #
 output_dir = "../../fig/sim-tsinfer/"
 if not os.path.exists(output_dir): os.makedirs(output_dir)
-force_overwrite = True
+force_overwrite = False #True
 pairs_only = False
 grid_size = 50
 trim_to = 1e8
@@ -36,12 +36,11 @@ y_max_ra = 2e-4 if pairs_only else 2e-4
 
 #--------- get rates, etc.
 
-ts_list = [
-    fetch(i) for i in range(5)
-]
-
 rate_store = f"tmp.trio_rates.p"
 if not os.path.exists(rate_store) or force_overwrite:
+    ts_list = [
+        fetch(i, j) for i in range(5) for j in range(1, 6)
+    ]
     emp_rates, std_rates = calculate_rates(ts_list, time_grid, pairs_only=pairs_only)
     emp_rates[:6] = 0
     std_rates[:6] = 0
@@ -84,16 +83,16 @@ plot_rates_point(ra_ax, duration, emp_rates[6:], pairs_only=pairs_only, point_kw
 fig.tight_layout()
 plt.savefig(output_dir + "test_trio_true.png")
 
-assert False
-
 # ----
 
-fit_store = f"tmp.trio_fit.{itt}.p"
+fit_store = f"tmp.trio_fit.p"
 if True: #not os.path.exists(fit_store):
     weights = 1 / std_rates
     weights[std_rates == 0] = 0
     weights[:6] = 0  # ignore pair rates
-    emp_params_fit, emp_rates_fit, emp_opt_traj = optimize_island_model(emp_rates, weights, duration, *initial_values(params), pairs_only=pairs_only, ftol_rel=1e-5, penalty=3.0)
+    weights[9] = 0 # ignore (A,B)B <-- debug
+    weights[8] = 0 # ignore (A,B)B <-- debug
+    emp_params_fit, emp_rates_fit, emp_opt_traj = optimize_island_model(emp_rates, weights, duration, *initial_values(params), pairs_only=pairs_only, ftol_rel=1e-5, penalty=20.0)
     pickle.dump((emp_params_fit, emp_rates_fit, emp_opt_traj), open(fit_store, "wb"))
 else:
     emp_params_fit, emp_rates_fit, emp_opt_traj = pickle.load(open(fit_store, "rb"))

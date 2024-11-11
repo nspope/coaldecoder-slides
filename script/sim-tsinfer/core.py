@@ -13,110 +13,61 @@ import matplotlib.pyplot as plt
 
 WHICH_MODEL = "osclogalt"
 
-def fetch(i):
-    if WHICH_MODEL == "osclog":
-        assert False
-        return tskit.load(f"/sietch_colab/natep/trio-coal/sims/osc-log/singer-snakemake/results/osclog_{i}/trees/osclog_{i}.{itt}.trees")
-    elif WHICH_MODEL == "osclogalt":
-        return tskit.load(f"/sietch_colab/natep/trio-coal/sims/osclog-altbig/foobar.{i}.trees")
+def fetch(i, j):
+    #fname = f"/sietch_colab/natep/trio-coal/sims/osclog-altbig/osclogaltbig_{j}.{i}.trees"
+    fname = f"/sietch_colab/natep/trio-coal/sims/osclogalt-big-regmu/infer_osclogaltbig_{j}.{i}.trees"
+    #fname = f"/sietch_colab/natep/trio-coal/sims/osclogalt-huge/infer_osclogaltbig_{j}.{i}.trees"
+    print(fname)
+    return tskit.load(fname)
 
 def plogis(x):
     return 1. / (1. + np.exp(-x))
 
-if WHICH_MODEL == "osclogalt":
+def rates_and_demography(
+        log_grid,
+        intercept=[2e4, 2e4], 
+        phase=[0, 1.0], 
+        frequency=[0.50, 0.50], 
+        amplitude=[15e3, 15e3], 
+        pulse_decay=[4, -4], 
+        pulse_mid=[3.5, 3.5], 
+        pulse_on=[-4, -4], 
+        pulse_off=[-6, -6], 
+        pairs_only=True,
+    ):
+    """
+    Pair rates for two oscillating populations with pulse migration
+    """
 
-    def rates_and_demography(
-            log_grid,
-            intercept=[2e4, 2e4], 
-            phase=[0, 1.0], 
-            frequency=[0.50, 0.50], 
-            amplitude=[15e3, 15e3], 
-            pulse_decay=[4, -4], 
-            pulse_mid=[3.5, 3.5], 
-            pulse_on=[-4, -4], 
-            pulse_off=[-6, -6], 
-            pairs_only=True,
-        ):
-        """
-        Pair rates for two oscillating populations with pulse migration
-        """
-    
-        time_grid = 10 ** log_grid
-        time_grid[0] = 0.0
-        grid_size = time_grid.size
-    
-        log_start = log_grid[:-1]
-        epoch_start = time_grid[:-1]
+    time_grid = 10 ** log_grid
+    time_grid[0] = 0.0
+    grid_size = time_grid.size
 
-        demographic_parameters = np.zeros((3, 3, grid_size - 1))
-        demographic_parameters[0,0] = intercept[0] + amplitude[0] * np.cos(2 * np.pi * (log_start + phase[0]) * frequency[0])
-        demographic_parameters[0,1] = 10 ** (pulse_off[0] + plogis(pulse_decay[0] * (log_start - pulse_mid[0])) * (pulse_on[0] - pulse_off[0]))
-        demographic_parameters[1,0] = 10 ** (pulse_off[1] + plogis(pulse_decay[1] * (log_start - pulse_mid[1])) * (pulse_on[1] - pulse_off[1]))
-        demographic_parameters[1,1] = intercept[1] + amplitude[1] * np.cos(2 * np.pi * (log_start + phase[1]) * frequency[1])
-        demographic_parameters[2,2] = np.inf
-        admixture_coefficients = np.zeros((3, 3, grid_size - 1))
-        for i in range(grid_size - 1): admixture_coefficients[:, :, i] = np.eye(3, 3)
-    
-        decoder = TrioCoalescenceRateModel(3)
-        expected_rates = decoder.forward(demographic_parameters, admixture_coefficients, np.diff(time_grid))
-    
-        state_labels = np.array(decoder.labels(['0','1','2']))
-        pair_subset = np.isin(state_labels, ["t1::((0,0),2)", "t1::((0,1),2)", "t1::((1,1),2)"])
-        trio_subset = np.isin(state_labels, 
-            ["t1::((0,0),0)", "t1::((0,0),1)", "t1::((0,1),0)", "t1::((0,1),1)", "t1::((1,1),0)", "t1::((1,1),1)"] +
-            ["t2::((0,0),0)", "t2::((0,0),1)", "t2::((0,1),0)", "t2::((0,1),1)", "t2::((1,1),0)", "t2::((1,1),1)"]
-        )
-        subset = pair_subset if pairs_only else trio_subset
-    
-        return np.diff(time_grid), expected_rates[subset], demographic_parameters[:2, :2]
+    log_start = log_grid[:-1]
+    epoch_start = time_grid[:-1]
 
-elif WHICH_MODEL == "osclog":
+    demographic_parameters = np.zeros((3, 3, grid_size - 1))
+    demographic_parameters[0,0] = intercept[0] + amplitude[0] * np.cos(2 * np.pi * (log_start + phase[0]) * frequency[0])
+    demographic_parameters[0,1] = 10 ** (pulse_off[0] + plogis(pulse_decay[0] * (log_start - pulse_mid[0])) * (pulse_on[0] - pulse_off[0]))
+    demographic_parameters[1,0] = 10 ** (pulse_off[1] + plogis(pulse_decay[1] * (log_start - pulse_mid[1])) * (pulse_on[1] - pulse_off[1]))
+    demographic_parameters[1,1] = intercept[1] + amplitude[1] * np.cos(2 * np.pi * (log_start + phase[1]) * frequency[1])
+    demographic_parameters[2,2] = np.inf
+    admixture_coefficients = np.zeros((3, 3, grid_size - 1))
+    for i in range(grid_size - 1): admixture_coefficients[:, :, i] = np.eye(3, 3)
 
-    def rates_and_demography(
-            log_grid,
-            intercept=[2e4, 2e4], 
-            phase=[0, 1.0], 
-            frequency=[0.50, 0.50], 
-            amplitude=[15e3, 15e3], 
-            pulse_mode=[3.5, 4.7], 
-            pulse_sd=[0.1, 0.1], 
-            pulse_on=[1e-4, 1e-3], 
-            pulse_off=[1e-6, 1.1e-6], 
-            pairs_only=True,
-        ):
-        """
-        Pair rates for two oscillating populations with pulse migration
-        """
-    
-    
-        time_grid = 10 ** log_grid
-        time_grid[0] = 0.0
-        grid_size = time_grid.size
-    
-        log_start = log_grid[:-1]
-        epoch_start = time_grid[:-1]
+    decoder = TrioCoalescenceRateModel(3)
+    expected_rates = decoder.forward(demographic_parameters, admixture_coefficients, np.diff(time_grid))
 
-        demographic_parameters = np.zeros((3, 3, grid_size - 1))
-        demographic_parameters[0,0] = intercept[0] + amplitude[0] * np.cos(2 * np.pi * (log_start + phase[0]) * frequency[0])
-        demographic_parameters[0,1] = pulse_off[0] + np.exp(-(log_start - pulse_mode[0]) ** 2 / pulse_sd[0] ** 2) * (pulse_on[0] - pulse_off[0])
-        demographic_parameters[1,0] = pulse_off[1] + np.exp(-(log_start - pulse_mode[1]) ** 2 / pulse_sd[1] ** 2) * (pulse_on[1] - pulse_off[1])
-        demographic_parameters[1,1] = intercept[1] + amplitude[1] * np.cos(2 * np.pi * (log_start + phase[1]) * frequency[1])
-        demographic_parameters[2,2] = np.inf
-        admixture_coefficients = np.zeros((3, 3, grid_size - 1))
-        for i in range(grid_size - 1): admixture_coefficients[:, :, i] = np.eye(3, 3)
-    
-        decoder = TrioCoalescenceRateModel(3)
-        expected_rates = decoder.forward(demographic_parameters, admixture_coefficients, np.diff(time_grid))
-    
-        state_labels = np.array(decoder.labels(['0','1','2']))
-        pair_subset = np.isin(state_labels, ["t1::((0,0),2)", "t1::((0,1),2)", "t1::((1,1),2)"])
-        trio_subset = np.isin(state_labels, 
-            ["t1::((0,0),0)", "t1::((0,0),1)", "t1::((0,1),0)", "t1::((0,1),1)", "t1::((1,1),0)", "t1::((1,1),1)"] +
-            ["t2::((0,0),0)", "t2::((0,0),1)", "t2::((0,1),0)", "t2::((0,1),1)", "t2::((1,1),0)", "t2::((1,1),1)"]
-        )
-        subset = pair_subset if pairs_only else trio_subset
-    
-        return np.diff(time_grid), expected_rates[subset], demographic_parameters[:2, :2]
+    state_labels = np.array(decoder.labels(['0','1','2']))
+    pair_subset = np.isin(state_labels, ["t1::((0,0),2)", "t1::((0,1),2)", "t1::((1,1),2)"])
+    trio_subset = np.isin(state_labels, 
+        ["t1::((0,0),0)", "t1::((0,0),1)", "t1::((0,1),0)", "t1::((0,1),1)", "t1::((1,1),0)", "t1::((1,1),1)"] +
+        ["t2::((0,0),0)", "t2::((0,0),1)", "t2::((0,1),0)", "t2::((0,1),1)", "t2::((1,1),0)", "t2::((1,1),1)"]
+    )
+    subset = pair_subset if pairs_only else trio_subset
+
+    return np.diff(time_grid), expected_rates[subset], demographic_parameters[:2, :2]
+
 
 
 def to_msprime(demographic_parameters, admixture_coefficients, time_step, population_names):

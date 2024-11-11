@@ -8,6 +8,7 @@ date: "12 Nov 2024"
 date-format: "MMM D, YYYY"
 format: 
   revealjs:
+    html-math-method: mathjax
     theme: white
     template-partials:
       - title-slide.html
@@ -40,19 +41,19 @@ $P(\mathrm{genealogy} \mid \Theta)$
 :::
 
 ::: {.fragment .current-visible fragment-index=2}
-Given some mutations, $m$
+Given some contemporary variation, $y$
 :::
 
 ::: {.fragment .current-visible fragment-index=3}
-$p(m \mid \mathrm{genealogy})$
+$p(y \mid \mathrm{genealogy})$
 :::
 
 ::: {.fragment .current-visible fragment-index=4}
-$p(m \mid \Theta) = \int p(m \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid \Theta)$
+$p(y \mid \Theta) = \int p(y \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid \Theta)$
 :::
 
 ::: {.fragment .current-visible fragment-index=5}
-Inference $\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)$
+Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 :::
 
 :::
@@ -78,6 +79,10 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)$
 
 ![](fig/arg-3d/arg-3d-4.png){.fragment .current-visible}
 
+![](fig/arg-3d/arg-3d-5.png){.fragment .current-visible}
+
+![](fig/arg-3d/arg-3d-6.png){.fragment .current-visible}
+
 :::
 
 ::: {.notes}
@@ -92,8 +97,6 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)$
 
 - Crucial point is, nodes are shared across trees, e.g. ancestral haplotypes
 
-- TODO: highlight edge
-
 - TODO: haplotype view of ARG? text needed?
 
 - Takeaway, space of ARGs is huge, integrating over it is hard
@@ -105,15 +108,20 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)$
 
 ::: {.incremental}
 
-- Reduce to haploid pair and integrate ARG (PSMC, etc.)
+- Reduce to single diploid and integrate ARG (PSMC, etc.)
 
-- Fit "marginal" statistics (SFS, LD, etc.)
+- Fit "marginal" sample statistics (SFS, LD, etc.)
 
 - Jointly infer ARG and demography (MCMC)
 
-- Condition on inferred ARG and ... ?
+- [Condition on inferred ARG and ... ?]{style="color:firebrick"}
 
 :::
+
+
+## Inference given inferred ARGs
+
+TODO
 
 
 ## Coalescence time distributions

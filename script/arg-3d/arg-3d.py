@@ -39,6 +39,10 @@ ax.text(xmin, ymin, z=0, zdir='x', s=r"$0 \leftarrow$", ha='center', va='top')
 ax.text(xmax, ymin, z=0, zdir='x', s=r"$\rightarrow L$", ha='center', va='top')
 ax.text(xmin/2 + xmax/2, 0.5, z=0, zdir='x', s="Position on sequence", ha='center', va='top')
 
+# ancestral haplotypes
+dashes=(2,1)
+haplo = []
+
 # first tree
 x1 = [1] * 10
 y = [1, 2, 3, 4, -1, -1, -1, -1, -1, -1]
@@ -49,7 +53,11 @@ y[7] = y[6]
 z = [0, 0, 0, 0, 1, 2, 3, 4, -1, -1, - 1]
 l1 = []
 edge_table = [(0, 4), (1, 4), (4, 5), (2, 5), (3, 6), (5, 6), (6, 7)]
-for (i, j) in edge_table:
+for i in [4, 5, 6]: # cross tree connections
+    ln, *_ = ax.plot((xmin, x1[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln.set_visible(False)
+    haplo.append(ln)
+for (i, j) in edge_table: # within tree connections
     line, *_ = ax.plot((x1[i], x1[j]), (y[i], y[j]), zs=(z[i], z[j]),  zdir='z', color='black')
     l1.append(line)
 # show haplotypes
@@ -68,7 +76,11 @@ y[8] = (y[2] + y[3]) / 2
 z[8] = 1
 edge_table = [(0, 4), (1, 4), (4, 6), (2, 8), (3, 8), (8, 6), (6, 7)]
 l2 = []
-for (i, j) in edge_table:
+for i in [4, 6]: # cross tree connections
+    ln, *_ = ax.plot((x1[i], x2[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln.set_visible(False)
+    haplo.append(ln) 
+for (i, j) in edge_table: # within tree connections
     line, *_ = ax.plot((x2[i], x2[j]), (y[i], y[j]), zs=(z[i], z[j]),  zdir='z', color='black')
     l2.append(line)
 for i in [0, 1, 2, 3, 4, 8, 6]:
@@ -88,7 +100,11 @@ y[9] = y[6]
 z[9] = 2.5
 edge_table = [(0, 4), (1, 4), (4, 9), (2, 8), (3, 8), (8, 9), (9, 7)]
 l3 = []
-for (i, j) in edge_table:
+for i in [4, 8]: # cross tree connections
+    ln, *_ = ax.plot((x2[i], x3[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln.set_visible(False)
+    haplo.append(ln)
+for (i, j) in edge_table: # within tree connections
     line, *_ = ax.plot((x3[i], x3[j]), (y[i], y[j]), zs=(z[i], z[j]),  zdir='z', color='black')
     l3.append(line)
 for i in [0, 1, 2, 3, 4, 8, 9]:
@@ -105,27 +121,39 @@ l2[5].set_color("black") # reset
 l3[2].set_color("black") # reset
 l3[5].set_color("black") # reset
 
-# ancestral haplotypes
-dashes=(2,1)
-haplo = []
-for i in [4, 5, 6]:
-    ln, *_ = ax.plot((xmin, x1[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
-    haplo.append(ln)
-for i in [4, 6]:
-    ln, *_ = ax.plot((x1[i], x2[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
-    haplo.append(ln)
-for i in [4, 8]:
-    ln, *_ = ax.plot((x2[i], x3[i]), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
-    haplo.append(ln)
-for i in [4, 8, 9]:
+for i in [4, 8, 9]: # cross tree connections
     ln, *_ = ax.plot((x3[i], xmax), (y[i], y[i]), zs=(z[i], z[i]), color="black", linestyle="dashed", dashes=dashes)
+    ln.set_visible(False)
     haplo.append(ln)
+
+for art in haplo: # highlight
+    art.set_color("firebrick")
+    art.set_visible(True)
+
+text_label = ax.text(x1[0] / 2 + x2[0] / 2, y[6], z=z[6], s='Ancestral\nhaplotype (node)', size=10, zdir='x', color='firebrick', va='bottom', ha='center')
 
 plt.savefig(out_dir + "arg-3d-4.png", bbox_inches=bbox)
 
+for art in haplo: # reset
+    art.set_color("black")
+text_label.remove()
+
 # colored edge
-xedge = [x0[4], x0[6], x1[6], x1[4]] 
-yedge = [y[4], y[6], y[6], y[4]]
-zedge = [z[4], z[6], z[6], z[4]]
-ax.plot_surface(xedge, yedge, zedge, color="firebrick", alpha=0.5)
+xedge = np.array([x1[4], x1[6], x2[6], x2[4]])
+yedge = np.array([y[4], y[6], y[6], y[4]])
+zedge = np.array([z[4], z[6], z[6], z[4]])
+_, zedge = np.meshgrid(yedge, zedge)
+xedge, yedge = np.meshgrid(xedge, yedge)
+surf = ax.plot_surface(xedge, yedge, zedge, color="firebrick", alpha=0.5)
+text_label = ax.text(x1[0] / 2 + x2[0] / 2, y[6], z=z[6], s='Inherited\nhaplotype (edge)', size=10, zdir='x', color='firebrick', va='bottom', ha='center')
 plt.savefig(out_dir + "arg-3d-5.png", bbox_inches=bbox)
+
+text_label.remove()
+surf.remove()
+xedge = np.array([xmin, xmin, xmax, xmax])
+yedge = np.array([y[0], y[4], y[4], y[0]])
+zedge = np.array([z[0], z[4], z[4], z[0]])
+_, zedge = np.meshgrid(yedge, zedge)
+xedge, yedge = np.meshgrid(xedge, yedge)
+surf = ax.plot_surface(xedge, yedge, zedge, color="firebrick", alpha=0.5)
+plt.savefig(out_dir + "arg-3d-6.png", bbox_inches=bbox)

@@ -391,16 +391,16 @@ Nov 12, 2024
 <p><span class="math inline">\(P(\mathrm{genealogy} \mid \Theta)\)</span></p>
 </div>
 <div class="fragment current-visible" data-fragment-index="2">
-<p>Given some mutations, <span class="math inline">\(m\)</span></p>
+<p>Given some contemporary variation, <span class="math inline">\(y\)</span></p>
 </div>
 <div class="fragment current-visible" data-fragment-index="3">
-<p><span class="math inline">\(p(m \mid \mathrm{genealogy})\)</span></p>
+<p><span class="math inline">\(p(y \mid \mathrm{genealogy})\)</span></p>
 </div>
 <div class="fragment current-visible" data-fragment-index="4">
-<p><span class="math inline">\(p(m \mid \Theta) = \int p(m \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid \Theta)\)</span></p>
+<p><span class="math inline">\(p(y \mid \Theta) = \int p(y \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid \Theta)\)</span></p>
 </div>
 <div class="fragment current-visible" data-fragment-index="5">
-<p>Inference <span class="math inline">\(\implies \mathrm{argmax}_{\Theta}~p(m \mid \Theta)\)</span></p>
+<p>Inference <span class="math inline">\(\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)\)</span></p>
 </div>
 </div>
 <aside class="notes">
@@ -427,6 +427,8 @@ Nov 12, 2024
 <p><img data-src="fig/arg-3d/arg-3d-2.png" class="fragment current-visible"></p>
 <p><img data-src="fig/arg-3d/arg-3d-3.png" class="fragment current-visible"></p>
 <p><img data-src="fig/arg-3d/arg-3d-4.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/arg-3d-5.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/arg-3d-6.png" class="fragment current-visible"></p>
 </div>
 <aside class="notes">
 <ul>
@@ -435,7 +437,6 @@ Nov 12, 2024
 <li><p>Recombination event results in prune/regraft of leaf</p></li>
 <li><p>Recombination event results in prune/regraft of root</p></li>
 <li><p>Crucial point is, nodes are shared across trees, e.g.&nbsp;ancestral haplotypes</p></li>
-<li><p>TODO: highlight edge</p></li>
 <li><p>TODO: haplotype view of ARG? text needed?</p></li>
 <li><p>Takeaway, space of ARGs is huge, integrating over it is hard</p></li>
 </ul>
@@ -455,12 +456,16 @@ Nov 12, 2024
 <h2>Inference at genomic scale</h2>
 <div>
 <ul>
-<li class="fragment"><p>Reduce to haploid pair and integrate ARG (PSMC, etc.)</p></li>
-<li class="fragment"><p>Fit “marginal” statistics (SFS, LD, etc.)</p></li>
+<li class="fragment"><p>Reduce to single diploid and integrate ARG (PSMC, etc.)</p></li>
+<li class="fragment"><p>Fit “marginal” sample statistics (SFS, LD, etc.)</p></li>
 <li class="fragment"><p>Jointly infer ARG and demography (MCMC)</p></li>
-<li class="fragment"><p>Condition on inferred ARG and … ?</p></li>
+<li class="fragment"><p><span style="color:firebrick">Condition on inferred ARG and … ?</span></p></li>
 </ul>
 </div>
+</section>
+<section id="inference-given-inferred-args" class="slide level2">
+<h2>Inference given inferred ARGs</h2>
+<p>TODO</p>
 </section>
 <section id="coalescence-time-distributions" class="slide level2">
 <h2>Coalescence time distributions</h2>
@@ -890,7 +895,7 @@ Nov 12, 2024
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
