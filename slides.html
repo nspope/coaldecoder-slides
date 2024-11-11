@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="Nate Pope">
-  <title>Inferring complex demographic histories from coalescence time distributions</title>
+  <title>Inferring complex demographic histories from ARG-derived coalescence time distributions</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -328,7 +328,7 @@
 <section id="title-slide" class="quarto-title-block center">
 
 <div>
-  <h2 class="title">Inferring complex demographic histories from coalescence time distributions</h2>
+  <h2 class="title">Inferring complex demographic histories from ARG-derived coalescence time distributions</h2>
 </div>
 
 <hr style="background-color: #333">
@@ -429,6 +429,9 @@ Nov 12, 2024
 <p><img data-src="fig/arg-3d/arg-3d-4.png" class="fragment current-visible"></p>
 <p><img data-src="fig/arg-3d/arg-3d-5.png" class="fragment current-visible"></p>
 <p><img data-src="fig/arg-3d/arg-3d-6.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/node-view-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/node-view-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/arg-3d/node-view-2.png" class="fragment current-visible"></p>
 </div>
 <aside class="notes">
 <ul>
@@ -463,8 +466,8 @@ Nov 12, 2024
 </ul>
 </div>
 </section>
-<section id="inference-given-inferred-args" class="slide level2">
-<h2>Inference given inferred ARGs</h2>
+<section id="inference-from-inferred-args" class="slide level2">
+<h2>Inference from inferred ARGs</h2>
 <p>TODO</p>
 </section>
 <section id="coalescence-time-distributions" class="slide level2">
@@ -686,13 +689,20 @@ Nov 12, 2024
 </section>
 <section id="fitting-to-inferred-rates" class="slide level2">
 <h2>Fitting to inferred rates</h2>
+<div class="r-stack">
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-3.png" class="fragment current-visible"></p>
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-4.png" class="fragment current-visible"></p>
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-5.png" class="fragment current-visible"></p>
+</div>
 <aside class="notes">
 <ul>
 <li><p>This machinery can easily be extended to more constrained settings, e.g.&nbsp;multiple rates per epoch, or parameterized functions</p></li>
 <li><p>Example is a little disingenuous, b/c noise in ARG inference will swamp out detail at that temporal scale</p></li>
 <li><p>For example, true vs inferred dates</p></li>
 <li><p>So as a litmus test i’m going to use a model on a log scale. The litmus test here is to infer the directionality of migration</p></li>
-<li><p>SINGER works great, blah blah</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -705,6 +715,21 @@ Nov 12, 2024
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="implementation-details" class="slide level2">
+<h2>Implementation details</h2>
+</section>
+<section id="implementation-api" class="slide level2">
+<h2>Implementation API</h2>
+</section>
+<section id="wip-fitting-windowed-rates" class="slide level2">
+<h2>WIP: fitting windowed rates</h2>
+</section>
+<section id="wip-fitting-spatial-rates" class="slide level2">
+<h2>WIP: fitting spatial rates</h2>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you!</h2>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 

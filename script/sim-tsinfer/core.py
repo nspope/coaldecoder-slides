@@ -250,7 +250,7 @@ def calculate_rates(ts_list, time_grid, num_blocks=10, random_seed=1, pairs_only
     emp_rates = rates_calculator.rates()
     std_rates = rates_calculator.std_dev(num_replicates=num_blocks, random_seed=random_seed)
 
-    return emp_rates, std_rates
+    return emp_rates, std_rates, rates_calculator
 
 
 # ----
@@ -310,11 +310,11 @@ def plot_ne_step(ne_ax, duration, params, line_kwargs={}):
     ne_ax.legend(ncol=2, loc='upper left')
 
 
-def plot_migr_step(mi_ax, duration, params, line_kwargs={}):
+def plot_migr_step(mi_ax, duration, params, line_kwargs={}, legend_loc='center left', legend_bbox=(0.01, 0.5)):
     start = np.cumsum(np.append(0, duration))[:-1]
     mi_ax.step(start, params[0,1], label=r"$M_{A \rightarrow B}$", color="dodgerblue", where="post", **line_kwargs)
     mi_ax.step(start, params[1,0], label=r"$M_{B \rightarrow A}$", color="firebrick", where="post", **line_kwargs)
-    mi_ax.legend(ncol=1, loc='center left', bbox_to_anchor=(0.01, 0.5))
+    mi_ax.legend(ncol=1, loc=legend_loc, bbox_to_anchor=legend_bbox) #(0.01, 0.5))
 
 
 def plot_rates_step(ra_ax, duration, rates, pairs_only=True, colors=None, line_kwargs={}, make_legend=True, label_suffix=""):
@@ -343,16 +343,19 @@ def plot_rates_point(ra_ax, duration, rates, pairs_only=True, colors=None, point
     if colors is None:
         colors = matplotlib.rcParams['axes.prop_cycle'].by_key()['color']
         colors = [colors[i % len(colors)] for i in range(len(rate_names))]
+    points = []
     for i, label in enumerate(rate_names):
         #ra_ax.step(start / 1e3 + offset * i, rates[i], label=label + label_suffix, color=colors[i], where="post")
         pts = ra_ax.scatter(mid, rates[i], label=label + label_suffix, c=colors[i], **point_kwargs)
+        points.append(pts)
     if make_legend:
         labs = [nm + label_suffix for nm in rate_names]
         ra_ax.legend(labs, ncol=1, loc='lower right')
+    return points
 
 
 def add_highlight(axs, highlight):
-    rect = matplotlib.patches.Rectangle((highlight[0], 1e-30), highlight[1] - highlight[0], 1e30, fc = 'gray', alpha=0.3)
+    rect = matplotlib.patches.Rectangle((highlight[0], 1e-30), highlight[1] - highlight[0], 1e30, fc = 'gray', alpha=0.1)
     if highlight is not None:
         axs.add_patch(rect)
     return rect
