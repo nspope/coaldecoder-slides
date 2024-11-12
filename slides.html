@@ -402,6 +402,9 @@ Nov 12, 2024
 <div class="fragment current-visible" data-fragment-index="5">
 <p>Inference <span class="math inline">\(\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)\)</span></p>
 </div>
+<div class="fragment current-visible" data-fragment-index="6">
+<p>What about recombinant sequences?</p>
+</div>
 </div>
 <aside class="notes">
 <ul>
@@ -460,22 +463,34 @@ Nov 12, 2024
 </div></aside></section>
 <section id="inference-at-genomic-scale" class="slide level2">
 <h2>Inference at genomic scale</h2>
-<div class="fragment">
+<div>
 <ul>
 <li class="fragment"><p>Reduce to single diploid and integrate ARG (PSMC, etc.)</p></li>
 <li class="fragment"><p>Fit “marginal” sample statistics (SFS, LD, etc.)</p></li>
 <li class="fragment"><p>Jointly infer ARG and demography (MCMC)</p></li>
-<li class="fragment"><p><span style="color:firebrick">Condition on inferred ARG and … ?</span></p>
-<ul>
-<li class="fragment"><p><span style="color:firebrick">Speidel et al 2019, 2021 (relate)</span></p></li>
-<li class="fragment"><p><span style="color:firebrick">Fan et al 2023 (gLike)</span></p></li>
-<li class="fragment"><p><span style="color:firebrick">Pope et al 2023 (this talk)</span></p></li>
-</ul></li>
+<li class="fragment"><p>Composite likelihood across loci</p></li>
+<li class="fragment"><p><span style="color:firebrick">Condition on inferred ARG and … ?</span></p></li>
 </ul>
 </div>
 </section>
-<section id="this-talk" class="slide level2">
-<h2>This talk</h2>
+<section id="inference-at-genomic-scale-1" class="slide level2">
+<h2>Inference at genomic scale</h2>
+<div>
+<p>Condition on inferred ARG and … ?</p>
+<ul>
+<li class="fragment"><p>Speidel et al 2019, 2021 (relate)</p></li>
+<li class="fragment"><p>Fan et al 2023 (gLike)</p></li>
+<li class="fragment"><p>Osmond &amp; Coop 2021, Deraje et al 2024 (sparg)</p></li>
+<li class="fragment"><p>Grundler et al 2024 (gaia)</p></li>
+<li class="fragment"><p><span style="color:firebrick">Pope et al 2023 (this talk)</span></p></li>
+</ul>
+</div>
+
+<aside><div>
+<p><span style="font-size: 75%">Recent review is Brandt et al (2024) <em>GBE</em></span></p>
+</div></aside></section>
+<section id="idea-behind-this-talk" class="slide level2">
+<h2>Idea behind this talk</h2>
 <div class="r-stack">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -495,13 +510,13 @@ Nov 12, 2024
 </div>
 <div class="r-stack">
 <div class="fragment current-visible" data-fragment-index="0">
-<p>Empirical time-to-event distribution from ARG</p>
+<p>Get empirical time-to-event distribution from ARG</p>
 </div>
 <div class="fragment current-visible" data-fragment-index="1">
-<p>Reweight events to generate distinct (marginal) distributions</p>
+<p>Reweight events <span class="math inline">\(\rightarrow\)</span> many distinct marginal distributions</p>
 </div>
 <div class="fragment current-visible" data-fragment-index="2">
-<p>Find model that matches these marginal distributions</p>
+<p>Find model producing similar marginal distributions</p>
 </div>
 </div>
 </section>
@@ -511,6 +526,7 @@ Nov 12, 2024
 <p><img data-src="fig/tree-ecdf/tree-0.png" class="fragment current-visible"></p>
 <p><img data-src="fig/tree-ecdf/tree-1.png" class="fragment current-visible"></p>
 <p><img data-src="fig/tree-ecdf/tree-ecdf-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/tree-ecdf/tree-ecdf-1p.png" class="fragment current-visible"></p>
 <p><img data-src="fig/tree-ecdf/tree-ecdf-1.png" class="fragment current-visible"></p>
 <p><img data-src="fig/tree-ecdf/tree-ecdf-2.png" class="fragment current-visible"></p>
 <p><img data-src="fig/tree-ecdf/tree-ecdf-3.png" class="fragment current-visible"></p>
@@ -566,7 +582,20 @@ Nov 12, 2024
 <p><img data-src="fig/incr-algo/scaling-0.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:60.0%"></p>
 </figure>
 </div>
+<div class="fragment current-visible" style="font-size: 75%">
+<p>Fast statistics calculation in <code>tskit</code>:</p>
+<ul>
+<li><p>Pair coalescence statistics</p>
+<ul>
+<li><p><code>ts.pair_coalescence_counts</code> : PDF and CDF</p></li>
+<li><p><code>ts.pair_coalescence_quantiles</code> : inverse CDF</p></li>
+<li><p><code>ts.pair_coalescence_rates</code> : coalescence rates</p></li>
+</ul></li>
+<li><p>Trio/quartet coalescence statistics in progress</p></li>
+</ul>
 </div>
+</div>
+
 <aside class="notes">
 <ul>
 <li><p>Need to leverage redundancy of trees for efficiency</p></li>
@@ -588,7 +617,9 @@ Nov 12, 2024
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
+<aside><div>
+<p><span style="font-size: 75%">For more algorithms in the vein, Ralph et al (2020) <em>Genetics</em></span></p>
+</div></aside></section>
 <section id="duality-of-pair-coalescence-and-ne" class="slide level2">
 <h2>Duality of pair coalescence and Ne</h2>
 <div class="r-stack">
@@ -634,9 +665,13 @@ Nov 12, 2024
 <section id="duality-of-pair-coalescence-and-ne-2" class="slide level2">
 <h2>Duality of pair coalescence and Ne</h2>
 <div class="r-stack">
-<p><img data-src="fig/ne-duality/size-to-coal-6.png" class="fragment current-visible"></p>
-<p><img data-src="fig/ne-duality/size-to-coal-7.png" class="fragment current-visible"></p>
-<p><img data-src="fig/ne-duality/size-to-coal-8.png" class="fragment current-visible"></p>
+<p><img data-src="fig/ne-duality/size-to-coal-6.png" class="fragment current-visible" data-fragment-index="0"></p>
+<p><img data-src="fig/ne-duality/size-to-coal-7.png" class="fragment current-visible" data-fragment-index="1"></p>
+<p><img data-src="fig/ne-duality/size-to-coal-8.png" class="fragment current-visible" data-fragment-index="2"></p>
+<p><img data-src="fig/ne-duality/relate-fig.png" class="fragment current-visible" data-fragment-index="3"></p>
+</div>
+<div class="fragment" data-fragment-index="3">
+<p><span style="font-size: 50%">Speidel et al (2019) <em>Nat Genet</em></span></p>
 </div>
 <aside class="notes">
 <ul>
@@ -771,12 +806,25 @@ Nov 12, 2024
 <p><img data-src="fig/sim-tsinfer/mut-times-1.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%"></p>
 </figure>
 </div>
+<p><img data-src="fig/sim-tsinfer/emp-pair-200-0.png" class="fragment current-visible"></p>
 </div>
 
 <aside><div>
 <p><span style="font-size: 75%">Kelleher et al (2019) <em>Nat Genet</em>, Wohns et al (2022) <em>Science</em>, Pope at al <em>in prep</em></span></p>
 </div></aside></section>
 <section id="fitting-to-inferred-rates-1" class="slide level2">
+<h2>Fitting to inferred rates</h2>
+<div class="r-stack">
+<p><img data-src="fig/incr-algo/polytomies-0.png" class="fragment current-visible"></p>
+<p><img data-src="fig/incr-algo/polytomies-1.png" class="fragment current-visible"></p>
+<p><img data-src="fig/incr-algo/polytomies-2.png" class="fragment current-visible"></p>
+<p><img data-src="fig/incr-algo/polytomies-3.png" class="fragment current-visible"></p>
+</div>
+
+<aside><div>
+<p><span style="font-size: 75%">Kelleher et al (2019) <em>Nat Genet</em>, Wohns et al (2022) <em>Science</em>, Pope at al <em>in prep</em></span></p>
+</div></aside></section>
+<section id="fitting-to-inferred-rates-2" class="slide level2">
 <h2>Fitting to inferred rates</h2>
 <div class="r-stack">
 <p><img data-src="fig/sim-tsinfer/emp-pair-200-0.png" class="fragment current-visible"></p>
@@ -805,21 +853,163 @@ Nov 12, 2024
           display:block!important;
       }</style></aside>
 </section>
+<section id="fitting-to-inferred-rates-3" class="slide level2">
+<h2>Fitting to inferred rates</h2>
+<p>Some takeaways:</p>
+<div>
+<ul>
+<li class="fragment"><p>Fitting models to inferred coalescence rates is useful</p></li>
+<li class="fragment"><p>… and very fast</p></li>
+<li class="fragment"><p>Extends to many populations/splits/mergers</p></li>
+<li class="fragment"><p>Parameterized model <span class="math inline">\(\rightarrow\)</span> simulation <span class="math inline">\(\rightarrow\)</span> model checking</p></li>
+<li class="fragment"><p>Easily windowed along genome</p></li>
+</ul>
+</div>
+</section>
+<section id="fitting-to-inferred-rates-4" class="slide level2">
+<h2>Fitting to inferred rates</h2>
+<p>Some caveats:</p>
+<div>
+<ul>
+<li class="fragment"><p>Have to trust in the ARG</p></li>
+<li class="fragment"><p>Model is implicitly neutral</p></li>
+<li class="fragment"><p>Identifiability/uniqueness isn’t guarenteed</p></li>
+</ul>
+</div>
+</section>
 <section id="implementation-details" class="slide level2">
 <h2>Implementation details</h2>
-<div class="fragment">
-
+<div class="r-stack">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1a.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="0"></p>
+</figure>
 </div>
-<p>Trio process also a CTMP</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1b.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="1"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1c.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="2"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1d.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="3"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1e.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="4"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1a.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="5"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1f.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="6"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1f.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="7"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/ctmp/ctmp-1f.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:80.0%" data-fragment-index="8"></p>
+</figure>
+</div>
+</div>
+<div class="r-stack">
+<div class="fragment current-visible" data-fragment-index="0">
+<p>Generator for 3-lineage Markov process</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="1">
+<p>3-lineage random walk (migration rates)</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="2">
+<p>3-lineage to 2-lineage coalescence (population sizes)</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="3">
+<p>2-lineage random walk (migration rates)</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="4">
+<p>2-lineage to 1-lineage coalescence (population sizes)</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="5">
+<p><span class="math inline">\((P + 1)^3\)</span>-dimensional state space</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="6">
+<p>Sparsify by prohibiting simultaneous events</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="7">
+<p><span class="math inline">\(\implies\)</span> “matrix-free” matrix exponential map</p>
+</div>
+<div class="fragment current-visible" data-fragment-index="8">
+<p><span class="math inline">\(\implies\)</span> backpropagate through matvecs</p>
+</div>
+</div>
 </section>
-<section id="implementation-api" class="slide level2">
-<h2>Implementation API</h2>
+<section id="implementation-details-1" class="slide level2">
+<h2>Implementation details</h2>
+<div>
+<ol type="1">
+<li class="fragment"><p>Observed rates <span class="math inline">\(y_i\)</span> in epoch <span class="math inline">\(i\)</span></p></li>
+<li class="fragment"><p>Block-bootstrap to estimate <span class="math inline">\(\hat{\Sigma}_i \approx \mathrm{Cov}(y_i)\)</span></p></li>
+<li class="fragment"><p>Minimize <span class="math inline">\(\sum_i (y_i - \mathbb{E}_\Theta[y_i])' \hat{\Sigma}_i (y_i - \mathbb{E}_\Theta[y_i])\)</span></p></li>
+<li class="fragment"><p>Regularization (smoothing) on parameters <span class="math inline">\(\Theta\)</span></p></li>
+</ol>
+</div>
 </section>
-<section id="wip-fitting-windowed-rates" class="slide level2">
-<h2>WIP: fitting windowed rates</h2>
+<section id="implementation-details-2" class="slide level2">
+<h2>Implementation details</h2>
+<div class="r-stack">
+<div class="fragment current-visible">
+<p><span style="font-size: 90%"><code>https://github.com/nspope/coaldecoder</code></span>:</p>
+<ul>
+<li><p>R/C++ cludge</p></li>
+<li><p>Fits “tree-like” population models</p></li>
+<li><p>Inefficient empirical rates calculations</p></li>
+<li><p>More flexible Python interface in progress</p></li>
+</ul>
+</div>
+</div>
 </section>
-<section id="wip-fitting-spatial-rates" class="slide level2">
-<h2>WIP: fitting spatial rates</h2>
+<section id="spatial-coalescence-rates" class="slide level2">
+<h2>Spatial coalescence rates</h2>
+<div class="r-stack">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/spatial/map-0.gif" class="fragment current-visible quarto-figure quarto-figure-center" style="width:100.0%" data-fragment-index="0"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/spatial/map-1.gif" class="fragment current-visible quarto-figure quarto-figure-center" style="width:100.0%" data-fragment-index="1"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/spatial/distr-0.gif" class="fragment current-visible quarto-figure quarto-figure-center" style="width:100.0%" data-fragment-index="2"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/spatial/distr-1.gif" class="fragment current-visible quarto-figure quarto-figure-center" style="width:100.0%" data-fragment-index="4"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/spatial/distr-2.gif" class="fragment current-visible quarto-figure quarto-figure-center" style="width:100.0%" data-fragment-index="5"></p>
+</figure>
+</div>
+</div>
 </section>
 <section id="thank-you" class="slide level2">
 <h2>Thank you!</h2>

@@ -30,7 +30,7 @@ y_max_ne = 8e5
 y_min_mi = 1e-7
 y_max_mi = 3e-3
 y_min_ra = 5e-8 if pairs_only else 1e-12
-y_max_ra = 2e-4 if pairs_only else 1e-4
+y_max_ra = 2e-4 if pairs_only else 5e-4
 
 #--------- get rates, etc.
 
@@ -93,11 +93,13 @@ plot_rates_step(ra_ax, duration, rates[6:], pairs_only=pairs_only, line_kwargs={
 fig.tight_layout()
 ne_ax.set_visible(False)
 mi_ax.set_visible(False)
+ra_label = ra_ax.text(0.02, 0.98, "Discretized expected rates", ha="left", va="top", transform=ra_ax.transAxes)
 plt.savefig(output_dir + "emp-trio-rates-0.png")
 
 # with fitted trajectory
 ne_ax.set_visible(True)
 mi_ax.set_visible(True)
+ne_label = ne_ax.text(0.98, 0.96, "Fitted model", ha="right", va="top", transform=ne_ax.transAxes)
 plt.savefig(output_dir + "emp-trio-rates-1.png")
 
 # plot discr true rates with observed rates
@@ -107,10 +109,14 @@ for art in list(ra_ax.lines): art.remove()
 ne_ax.get_legend().remove()
 mi_ax.get_legend().remove()
 ra_ax.get_legend().remove()
+ra_label.remove()
+ne_label.remove()
 plot_ne_step(ne_ax, duration, emp_params_fit)
 plot_migr_step(mi_ax, duration, emp_params_fit)
 plot_rates_point(ra_ax, duration, emp_rates[6:], pairs_only=pairs_only, label_suffix=" from ecdf", point_kwargs={"s" : 6}, offset=0.1)
 plot_rates_step(ra_ax, duration, rates[6:], pairs_only=pairs_only, line_kwargs={"alpha" : 0.2}, make_legend=False, label_suffix=" from true", offset=0.1)
+ne_label = ne_ax.text(0.98, 0.96, "Fitted model", ha="right", va="top", transform=ne_ax.transAxes)
+ra_label = ra_ax.text(0.02, 0.98, "Empirical rates from true ARG", ha="left", va="top", transform=ra_ax.transAxes)
 ne_ax.set_visible(False)
 mi_ax.set_visible(False)
 plt.savefig(output_dir + "emp-trio-rates-2.png")

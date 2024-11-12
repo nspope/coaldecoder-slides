@@ -56,6 +56,10 @@ $p(y \mid \Theta) = \int p(y \mid \mathrm{genealogy}) dP(\mathrm{genealogy} \mid
 Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 :::
 
+::: {.fragment .current-visible fragment-index=6}
+What about recombinant sequences?
+:::
+
 :::
 
 ::: {.notes}
@@ -118,7 +122,7 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 
 ## Inference at genomic scale
 
-::: {.incremental .fragment}
+::: {.incremental}
 
 - Reduce to single diploid and integrate ARG (PSMC, etc.)
 
@@ -126,18 +130,38 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 
 - Jointly infer ARG and demography (MCMC)
 
+- Composite likelihood across loci
+
 - [Condition on inferred ARG and ... ?]{style="color:firebrick"}
 
-    - [Speidel et al 2019, 2021 (relate)]{style="color:firebrick"}
+:::
 
-    - [Fan et al 2023 (gLike)]{style="color:firebrick"}
+## Inference at genomic scale
 
-    - [Pope et al 2023 (this talk)]{style="color:firebrick"}
+::: {.incremental}
+
+Condition on inferred ARG and ... ?
+
+- Speidel et al 2019, 2021 (relate)
+
+- Fan et al 2023 (gLike)
+
+- Osmond & Coop 2021, Deraje et al 2024 (sparg)
+
+- Grundler et al 2024 (gaia)
+
+- [Pope et al 2023 (this talk)]{style="color:firebrick"}
+
+:::
+
+::: aside
+
+[Recent review is Brandt et al (2024) *GBE*]{style="font-size: 75%"}
 
 :::
 
 
-## This talk
+## Idea behind this talk
 
 ::: {.r-stack}
 
@@ -156,11 +180,11 @@ Get empirical time-to-event distribution from ARG
 :::
 
 ::: {.fragment .current-visible fragment-index=1}
-Reweight events to generate distinct (marginal) distributions
+Reweight events $\rightarrow$ many distinct marginal distributions
 :::
 
 ::: {.fragment .current-visible fragment-index=2}
-Find model that matches these marginal distributions
+Find model producing similar marginal distributions
 :::
 
 :::
@@ -250,6 +274,28 @@ Find model that matches these marginal distributions
 
 ![](fig/incr-algo/scaling-0.png){.fragment .current-visible width="60%" fig-align="center"}
 
+::: {.fragment .current-visible style="font-size: 75%"}
+
+Fast statistics calculation in `tskit`:
+
+- Pair coalescence statistics
+
+    - `ts.pair_coalescence_counts` : PDF and CDF
+
+    - `ts.pair_coalescence_quantiles` : inverse CDF
+
+    - `ts.pair_coalescence_rates` : coalescence rates
+
+- Trio/quartet coalescence statistics in progress
+
+:::
+
+:::
+
+::: aside
+
+[For more algorithms in the vein, Ralph et al (2020) *Genetics*]{style="font-size: 75%"}
+
 :::
 
 ::: {.notes}
@@ -334,11 +380,19 @@ Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
 
 ::: {.r-stack}
 
-![](fig/ne-duality/size-to-coal-6.png){.fragment .current-visible}
+![](fig/ne-duality/size-to-coal-6.png){.fragment .current-visible fragment-index=0}
 
-![](fig/ne-duality/size-to-coal-7.png){.fragment .current-visible}
+![](fig/ne-duality/size-to-coal-7.png){.fragment .current-visible fragment-index=1}
 
-![](fig/ne-duality/size-to-coal-8.png){.fragment .current-visible}
+![](fig/ne-duality/size-to-coal-8.png){.fragment .current-visible fragment-index=2}
+
+![](fig/ne-duality/relate-fig.png){.fragment .current-visible fragment-index=3}
+
+:::
+
+::: {.fragment fragment-index=3}
+
+[Speidel et al (2019) *Nat Genet*]{style="font-size: 50%"}
 
 :::
 
@@ -487,6 +541,29 @@ Modelled as an absorbing Markov process,
 
 ![](fig/sim-tsinfer/mut-times-1.png){.fragment .current-visible width="50%" fig-align="center"}
 
+![](fig/sim-tsinfer/emp-pair-200-0.png){.fragment .current-visible}
+
+:::
+
+::: aside
+
+[Kelleher et al (2019) *Nat Genet*, Wohns et al (2022) *Science*, Pope at al *in prep*]{style="font-size: 75%"}
+
+:::
+
+
+## Fitting to inferred rates
+
+::: {.r-stack}
+
+![](fig/incr-algo/polytomies-0.png){.fragment .current-visible}
+
+![](fig/incr-algo/polytomies-1.png){.fragment .current-visible}
+
+![](fig/incr-algo/polytomies-2.png){.fragment .current-visible}
+
+![](fig/incr-algo/polytomies-3.png){.fragment .current-visible}
+
 :::
 
 ::: aside
@@ -527,18 +604,157 @@ Modelled as an absorbing Markov process,
 :::
 
 
-## Implementation details
+## Fitting to inferred rates
 
-::: {.fragment}
+Some takeaways:
+
+::: {.incremental}
+
+- Fitting models to inferred coalescence rates is useful
+
+- ... and very fast
+
+- Extends to many populations/splits/mergers
+
+- Parameterized model $\rightarrow$ simulation $\rightarrow$ model checking
+
+- Easily windowed along genome
 
 :::
 
-Trio process also a CTMP 
 
-## Implementation API
+## Fitting to inferred rates
 
-## WIP: fitting windowed rates
+Some caveats:
 
-## WIP: fitting spatial rates
+::: {.incremental}
+
+- Have to trust in the ARG
+
+- Model is implicitly neutral
+
+- Identifiability/uniqueness isn't guarenteed
+
+:::
+
+
+## Implementation details
+
+::: {.r-stack}
+
+![](fig/ctmp/ctmp-1a.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=0}
+
+![](fig/ctmp/ctmp-1b.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=1}
+
+![](fig/ctmp/ctmp-1c.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=2}
+
+![](fig/ctmp/ctmp-1d.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=3}
+
+![](fig/ctmp/ctmp-1e.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=4}
+
+![](fig/ctmp/ctmp-1a.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=5}
+
+![](fig/ctmp/ctmp-1f.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=6}
+
+![](fig/ctmp/ctmp-1f.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=7}
+
+![](fig/ctmp/ctmp-1f.png){.fragment .current-visible width="80%" fig-align="center" fragment-index=8}
+
+:::
+
+::: {.r-stack} 
+
+::: {.fragment .current-visible fragment-index=0}
+Generator for 3-lineage Markov process
+:::
+
+::: {.fragment .current-visible fragment-index=1}
+3-lineage random walk (migration rates)
+:::
+
+::: {.fragment .current-visible fragment-index=2}
+3-lineage to 2-lineage coalescence (population sizes)
+:::
+
+::: {.fragment .current-visible fragment-index=3}
+2-lineage random walk (migration rates)
+:::
+
+::: {.fragment .current-visible fragment-index=4}
+2-lineage to 1-lineage coalescence (population sizes)
+:::
+
+::: {.fragment .current-visible fragment-index=5}
+$(P + 1)^3$-dimensional state space
+:::
+
+::: {.fragment .current-visible fragment-index=6}
+Sparsify by prohibiting simultaneous events
+:::
+
+::: {.fragment .current-visible fragment-index=7}
+$\implies$ "matrix-free" matrix exponential map
+:::
+
+::: {.fragment .current-visible fragment-index=8}
+$\implies$ backpropagate through matvecs
+:::
+
+:::
+
+
+## Implementation details
+
+::: {.incremental}
+
+1. Observed rates $y_i$ in epoch $i$
+
+2. Block-bootstrap to estimate $\hat{\Sigma}_i \approx \mathrm{Cov}(y_i)$
+
+3. Minimize $\sum_i (y_i - \mathbb{E}_\Theta[y_i])' \hat{\Sigma}_i (y_i - \mathbb{E}_\Theta[y_i])$
+
+4. Regularization (smoothing) on parameters $\Theta$
+
+:::
+
+
+## Implementation details
+
+::: {.r-stack}
+
+::: {.fragment .current-visible}
+
+[`https://github.com/nspope/coaldecoder`]{style="font-size: 90%"}:
+
+- R/C++ cludge
+
+- Fits "tree-like" population models
+
+- Inefficient empirical rates calculations
+
+- More flexible Python interface in progress
+
+:::
+
+:::
+
+
+## Spatial coalescence rates
+
+
+::: {.r-stack}
+
+![](fig/spatial/map-0.gif){.fragment .current-visible width="100%" fig-align="center" fragment-index=0}
+
+![](fig/spatial/map-1.gif){.fragment .current-visible width="100%" fig-align="center" fragment-index=1}
+
+![](fig/spatial/distr-0.gif){.fragment .current-visible width="100%" fig-align="center" fragment-index=2}
+
+![](fig/spatial/distr-1.gif){.fragment .current-visible width="100%" fig-align="center" fragment-index=4}
+
+![](fig/spatial/distr-2.gif){.fragment .current-visible width="100%" fig-align="center" fragment-index=5}
+
+:::
+
 
 ## Thank you!

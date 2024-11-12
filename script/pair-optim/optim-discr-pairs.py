@@ -58,6 +58,9 @@ else:
     params_fit, rates_fit, opt_traj, emp_params_fit, emp_rates_fit, emp_opt_traj = pickle.load(open(traj_store, "rb"))
 
 
+fine_grid = np.linspace(0, time_grid[-1], 1001)
+fine_duration, fine_rates, fine_params = rates_and_demography(fine_grid, pairs_only=pairs_only)
+
 # --- plot observed rates only
 
 fig = plt.figure(figsize=(8, 4))#, constrained_layout=True)
@@ -79,17 +82,26 @@ ra_ax.set_xlim(x_min, x_max)
 ra_ax.set_yscale('log')
 
 # plot discretized true rates only
-plot_ne_step(ne_ax, duration, params_fit)
-plot_migr_step(mi_ax, duration, params_fit)
+plot_ne_step(ne_ax, fine_duration, fine_params)
+plot_migr_step(mi_ax, fine_duration, fine_params)
+ne_label = ne_ax.text(0.98, 0.96, "Generative model", ha="right", va="top", transform=ne_ax.transAxes)
+ra_label = ra_ax.text(0.02, 0.98, "Discretized expected rates", ha="left", va="top", transform=ra_ax.transAxes)
+ne_ax.set_ylabel(r"Haploid $N_e$")
+mi_ax.set_ylabel(r"Migration rate")
 plot_rates_step(ra_ax, duration, rates, pairs_only=True, line_kwargs={}, label_suffix=" from true")
 fig.tight_layout()
-ne_ax.set_visible(False)
-mi_ax.set_visible(False)
+
 plt.savefig(output_dir + "emp-rates-0.png")
 
 # with fitted trajectory
-ne_ax.set_visible(True)
-mi_ax.set_visible(True)
+ne_label.remove()
+for art in list(ne_ax.lines): art.remove()
+for art in list(mi_ax.lines): art.remove()
+ne_ax.get_legend().remove()
+mi_ax.get_legend().remove()
+plot_ne_step(ne_ax, duration, params_fit)
+plot_migr_step(mi_ax, duration, params_fit)
+ne_label = ne_ax.text(0.98, 0.96, "Fitted model", ha="right", va="top", transform=ne_ax.transAxes)
 plt.savefig(output_dir + "emp-rates-1.png")
 
 # plot discr true rates with observed rates
@@ -103,6 +115,10 @@ plot_ne_step(ne_ax, duration, emp_params_fit)
 plot_migr_step(mi_ax, duration, emp_params_fit)
 plot_rates_point(ra_ax, duration, emp_rates, pairs_only=True, label_suffix=" from ecdf", point_kwargs={"s" : 6})
 plot_rates_step(ra_ax, duration, rates, pairs_only=True, line_kwargs={"alpha" : 0.2}, make_legend=False, label_suffix=" from true")
+ra_label.remove()
+ne_label.remove()
+ne_label = ne_ax.text(0.98, 0.96, "Fitted model", ha="right", va="top", transform=ne_ax.transAxes)
+ra_label = ra_ax.text(0.02, 0.98, "Empirical rates from true ARG", ha="left", va="top", transform=ra_ax.transAxes)
 ne_ax.set_visible(False)
 mi_ax.set_visible(False)
 plt.savefig(output_dir + "emp-rates-2.png")
