@@ -134,7 +134,18 @@ true_label = axs.text(0.97, 0.55, r"$n(t)$", color="black", transform=axs.transA
 
 plt.savefig(output_dir + "size-to-coal-6.png")
 
-axs.step(grid, np.append(ne_est, ne_est[-1]), where="post", color='firebrick', linewidth=1, linestyle="--")
-est_label = axs.text(0.42, 0.87, r"$\hat{n}(t)$ from $\mathrm{ECDF}_{\mathcal{S}}$", color="firebrick", transform=axs.transAxes, fontsize=12, ha='left')
+ne_step = axs.step(grid, np.append(ne_est, ne_est[-1]), where="post", color='firebrick', linewidth=1, linestyle="--")
+est_label = axs.text(0.41, 0.95, r"$\hat{n}(t)$ from $\mathrm{ECDF}_{\mathcal{S}}$ (10 cM)", color="firebrick", transform=axs.transAxes, fontsize=12, ha='left')
 
 plt.savefig(output_dir + "size-to-coal-7.png")
+
+# ---- with bigger sequence
+
+big_ts = get_ts(sequence_length=1e8, path="tmp.big.trees")
+fine_grid = np.linspace(0, 5e4, 41)
+ne_est_big = 1. / get_ne_est(big_ts, fine_grid)
+for art in ne_step: art.remove()
+ne_step = axs.step(fine_grid, np.append(ne_est_big, ne_est_big[-1]), where="post", color='firebrick', linewidth=1, linestyle="--")
+est_label.remove()
+est_label = axs.text(0.42, 0.67, r"$\hat{n}(t)$ from $\mathrm{ECDF}_{\mathcal{S}}$ (100 cM)", color="firebrick", transform=axs.transAxes, fontsize=12, ha='left')
+plt.savefig(output_dir + "size-to-coal-8.png")

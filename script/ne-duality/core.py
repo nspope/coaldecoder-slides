@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import msprime
 
-force_overwrite = True
+force_overwrite = False
 
 
 def get_model():
@@ -35,13 +35,13 @@ def get_pop_size_and_coal_rate():
         return out
 
 
-def get_ts() -> tskit.TreeSequence:
-    if os.path.exists("tmp.trees") and not force_overwrite:
-        return tskit.load("tmp.trees")
+def get_ts(sequence_length=2e6, path="tmp.trees") -> tskit.TreeSequence:
+    if os.path.exists(path) and not force_overwrite:
+        return tskit.load(path)
     else:
         model = get_model()
-        ts = msprime.sim_ancestry(samples=50, demography=model, recombination_rate=1e-8, sequence_length=2e6, random_seed=1)
-        ts.dump("tmp.trees")
+        ts = msprime.sim_ancestry(samples=50, demography=model, recombination_rate=1e-8, sequence_length=sequence_length, random_seed=1)
+        ts.dump(path)
         return ts
 
 

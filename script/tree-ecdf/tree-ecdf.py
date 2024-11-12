@@ -60,12 +60,16 @@ for art in list(axs_ecdf.lines): art.remove()
 
 draw_ecdf(axs_ecdf, tree, count_pairs(tree), root_length, color='black')
 draw_node_weights(axs_tree, tree, count_pairs(tree), color='black')
+label = r"$\mathrm{Pairs(}i) = \sum_{i, j \in \mathcal{C}(i)} " + \
+    r"\mathrm{Samples(}i) \times \mathrm{Samples(}j$"
+label = axs_ecdf.text(0.0, 0.99, label, ha='left', va='top', size=12, usetex=True)
+plt.savefig(output_dir + "tree-ecdf-1p.png")
+
+label.remove()
 label = r"$\mathrm{Pairs(}i) = 2^{-1} \sum_{j \in \mathcal{C}(i)} " + \
     r"\mathrm{Samples(}j) \times (\mathrm{Samples(}i) - \mathrm{Samples(}j))$"
 label = axs_ecdf.text(0.0, 0.99, label, ha='left', va='top', size=12, usetex=True)
-
 plt.savefig(output_dir + "tree-ecdf-1.png")
-
 
 # ------ clade labels ------ #
 

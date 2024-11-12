@@ -91,6 +91,12 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 
 :::
 
+::: aside
+
+[Wong et al (2024) *Genetics*; Nielsen et al (2024) *Nat Rev Genet*; Lewanski et al (2024) *PLoS Genet*]{style="font-size: 75%"}
+
+:::
+
 ::: {.notes}
 
 - Haplotypes along recombinant sequence of length L
@@ -112,7 +118,7 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 
 ## Inference at genomic scale
 
-::: {.incremental}
+::: {.incremental .fragment}
 
 - Reduce to single diploid and integrate ARG (PSMC, etc.)
 
@@ -122,12 +128,42 @@ Inference $\implies \mathrm{argmax}_{\Theta}~p(y \mid \Theta)$
 
 - [Condition on inferred ARG and ... ?]{style="color:firebrick"}
 
+    - [Speidel et al 2019, 2021 (relate)]{style="color:firebrick"}
+
+    - [Fan et al 2023 (gLike)]{style="color:firebrick"}
+
+    - [Pope et al 2023 (this talk)]{style="color:firebrick"}
+
 :::
 
 
-## Inference from inferred ARGs
+## This talk
 
-TODO
+::: {.r-stack}
+
+![](fig/roadmap/roadmap-0.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=0}
+
+![](fig/roadmap/roadmap-1.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=1}
+
+![](fig/roadmap/roadmap-2.png){.fragment .current-visible width="50%" fig-align="center" fragment-index=2}
+
+:::
+
+::: {.r-stack} 
+
+::: {.fragment .current-visible fragment-index=0}
+Get empirical time-to-event distribution from ARG
+:::
+
+::: {.fragment .current-visible fragment-index=1}
+Reweight events to generate distinct (marginal) distributions
+:::
+
+::: {.fragment .current-visible fragment-index=2}
+Find model that matches these marginal distributions
+:::
+
+:::
 
 
 ## Coalescence time distributions
@@ -139,6 +175,8 @@ TODO
 ![](fig/tree-ecdf/tree-1.png){.fragment .current-visible}
 
 ![](fig/tree-ecdf/tree-ecdf-0.png){.fragment .current-visible}
+
+![](fig/tree-ecdf/tree-ecdf-1p.png){.fragment .current-visible}
 
 ![](fig/tree-ecdf/tree-ecdf-1.png){.fragment .current-visible}
 
@@ -165,6 +203,10 @@ TODO
 
 ![](fig/marg-ecdf/marg-ecdf-3.png){.fragment .current-visible}
 
+![](fig/marg-ecdf/marg-ecdf-4.png){.fragment .current-visible}
+
+![](fig/marg-ecdf/marg-ecdf-5.png){.fragment .current-visible}
+
 :::
 
 ::: {.notes}
@@ -177,7 +219,7 @@ TODO
 
 - The weighted average converges to true CDF asymptotically
 
-- TODO: node weights (probably?), convergence (?)
+- convergence (?)
 
 :::
 
@@ -206,6 +248,8 @@ TODO
 
 ![](fig/incr-algo/right-tree-detail-0.png){.fragment .current-visible}
 
+![](fig/incr-algo/scaling-0.png){.fragment .current-visible width="60%" fig-align="center"}
+
 :::
 
 ::: {.notes}
@@ -223,10 +267,6 @@ TODO
 - If there are multiple edges removed/added, need to be careful about order
 
 - Complexity is O(edges log tips) to get node weights, querying ECDF is binary search O(log nodes)
-
-- TODO: expository text, e.g. "Number of subtended samples S"
-
-- TODO: plot showing scaling with number of tips
 
 :::
 
@@ -298,6 +338,8 @@ Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
 
 ![](fig/ne-duality/size-to-coal-7.png){.fragment .current-visible}
 
+![](fig/ne-duality/size-to-coal-8.png){.fragment .current-visible}
+
 :::
 
 ::: {.notes}
@@ -337,7 +379,7 @@ $$
   c_{ab}(t) = \sum_i f_{i,ab}(t) n_i(t)^{-1}
 $$
 
-summing over populations at time $t$.
+summing over populations with haploid size $n_i(t)$.
 
 
 ## Pair coalescence and structure
@@ -445,6 +487,19 @@ Modelled as an absorbing Markov process,
 
 ![](fig/sim-tsinfer/mut-times-1.png){.fragment .current-visible width="50%" fig-align="center"}
 
+:::
+
+::: aside
+
+[Kelleher et al (2019) *Nat Genet*, Wohns et al (2022) *Science*, Pope at al *in prep*]{style="font-size: 75%"}
+
+:::
+
+
+## Fitting to inferred rates
+
+::: {.r-stack}
+
 ![](fig/sim-tsinfer/emp-pair-200-0.png){.fragment .current-visible}
 
 ![](fig/sim-tsinfer/emp-pair-200-1.png){.fragment .current-visible}
@@ -473,6 +528,12 @@ Modelled as an absorbing Markov process,
 
 
 ## Implementation details
+
+::: {.fragment}
+
+:::
+
+Trio process also a CTMP 
 
 ## Implementation API
 

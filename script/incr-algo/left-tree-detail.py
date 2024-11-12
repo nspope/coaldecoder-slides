@@ -27,6 +27,7 @@ axs.set_xticks([0, 6.5, 9], labels=[r"$0 \leftarrow$", r"Recombination event $(x
 axs.spines['top'].set_visible(False)
 axs.spines['left'].set_visible(False)
 axs.spines['right'].set_visible(False)
+axs.set_title(" ")
 
 coords = draw_trio(axs, (3, 7), (0.5, 5.5), clade_width=0.5, edge_highlight="firebrick", highlight_path=False)
 axs.axvline(x=6.5, color='black', linestyle="--", linewidth=1)
@@ -55,6 +56,7 @@ node_labels.append(axs.text(*(coords[4] + [ 0.1, 0.0]), r"$S_5$", color="black",
 node_labels.append(axs.text(*(coords[5] + [-0.1, 0.0]), r"$S_6$", color="black", ha="right", va="bottom"))
 node_labels.append(axs.text(*(coords[6] + [ 0.1, 0.0]), r"$S_7$", color="black", ha="left", va="bottom"))
 node_labels.append(axs.text(*(coords[7] + [-0.1, 0.0]), r"$S_8$", color="black", ha="right", va="bottom"))
+axs.set_title(r"Count of subtended samples $S_i$", loc='left', fontsize=10)
 
 plt.savefig(output_dir + "left-tree-detail-1.png")
 
@@ -81,6 +83,7 @@ plt.savefig(output_dir + "left-tree-detail-2.png")
 
 # --- node labels for pairs ---
 for lab in node_labels: lab.remove()
+axs.set_title(" ")
 
 node_labels = []
 node_labels.append(axs.text(*(coords[1] + [ 0.1, 0.0]), r"$2$", color="black", ha="left", va="bottom"))
@@ -92,6 +95,7 @@ node_labels.append(axs.text(*(coords[7] + [-0.1, 0.0]), r"$P_8 = S_6 (S_8 - S_6)
 #node_labels.append(axs.text(*(coords[4] + [ 0.1, 0.0]), r"$5$", color="black", ha="left", va="bottom"))
 #node_labels.append(axs.text(*(coords[6] + [ 0.1, 0.0]), r"$7$", color="black", ha="left", va="bottom"))
 
+axs.set_title(r"Count of coalescing pairs $P_i$", loc="left", fontsize=10)
 plt.savefig(output_dir + "left-tree-detail-3.png")
 
 # --- node labels for updated pairs ---
@@ -107,6 +111,7 @@ plt.savefig(output_dir + "left-tree-detail-4.png")
 
 # --- node labels for updated expectation ---
 for lab in node_labels: lab.remove()
+axs.title.set_visible(False)
 
 node_labels = []
 node_labels.append(axs.text(*(coords[1] + [ 0.1, 0.0]), r"$2$", color="black", ha="left", va="bottom"))

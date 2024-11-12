@@ -91,8 +91,8 @@ plt.savefig(output_dir + "marg-ecdf-2.png")
 for art in list(axs.lines): art.remove()
 label.remove()
 
-axs.step(true_ecdf[0], true_ecdf[1], where="post", color="dodgerblue")
-axs.step(marg_ecdf[0], marg_ecdf[1], where="post", color="black")
+true_ecdf_step = axs.step(true_ecdf[0], true_ecdf[1], where="post", color="dodgerblue")
+marg_ecdf_step = axs.step(marg_ecdf[0], marg_ecdf[1], where="post", color="black")
 emp_ecdf_label = r'Marginalized ECDF'
 emp_ecdf_label = axs.text(0.5, 0.45, emp_ecdf_label, transform=axs.transAxes, va='bottom', ha='right', color="black")
 
@@ -101,8 +101,35 @@ label = axs.text(0.01, 0.95, label, transform=axs.transAxes, ha='left', va='cent
 
 plt.savefig(output_dir + "marg-ecdf-3.png")
 
+label.remove()
+label = r'$\mathrm{CDF}(t) \approx \mathrm{ECDF}_{\mathcal{S}}(t)$'
+label = axs.text(0.01, 0.95, label, transform=axs.transAxes, ha='left', va='center')
+plt.savefig(output_dir + "marg-ecdf-4.png")
+
+
 # ------ as a distribution ---- #
 
+for art in true_ecdf_step: art.remove()
+for art in marg_ecdf_step: art.remove()
+emp_ecdf_label.remove()
+true_ecdf_label.remove()
+label.remove()
+
+node_times = marg_ecdf[0]
+node_weights = np.diff(marg_ecdf[1])
+weights = []
+for t, w in zip(node_times, node_weights):
+    if w > 0:
+        axs.plot((t, t), (0, w), linewidth=0.5, color="black")
+label = r'$\mathrm{ECDF}_{\mathcal{S}}(t) = \sum_{i \in \mathrm{nodes}} \mathbb{I}[t_i < t] \frac{\mathbb{E}_{\mathcal{S}}[\mathrm{pairs}_i]}{\sum_j \mathbb{E}_{\mathcal{S}}[\mathrm{pairs}_j]}$'
+label = axs.text(0.01, 0.95, label, transform=axs.transAxes, ha='left', va='center')
+axs.set_ylim(0, node_weights.max() + 0.0005)
+axs.set_ylabel("Empirical PDF")
+fig.tight_layout()
+plt.savefig(output_dir + "marg-ecdf-5.png")
+
+
 # ------ ecdf convergence ----- #
+
 
 # ------ "node" view ---------- #
