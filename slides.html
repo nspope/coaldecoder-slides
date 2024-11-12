@@ -615,9 +615,40 @@ Nov 12, 2024
 </section>
 <section id="pair-coalescence-and-structure" class="slide level2">
 <h2>Pair coalescence and structure</h2>
-<p>TODO theory</p>
+<p>Let <span class="math inline">\(u(t)\)</span> be population occupancy at time <span class="math inline">\(t\)</span>, e.g.</p>
+<p><span class="math display">\[
+  u(0) = \{a, b\}
+\]</span></p>
+<p>in the present day.</p>
 </section>
 <section id="pair-coalescence-and-structure-1" class="slide level2">
+<h2>Pair coalescence and structure</h2>
+<p>Co-occupancy probability for population <span class="math inline">\(i\)</span> is,</p>
+<p><span class="math display">\[
+  f_{i,ab}(t) = P(u_t = \{i, i\} \mid u_0 = \{a, b\})
+\]</span></p>
+<p>given initial locations.</p>
+</section>
+<section id="pair-coalescence-and-structure-2" class="slide level2">
+<h2>Pair coalescence and structure</h2>
+<p>Thus instantaneous “cross-coalescence” rate,</p>
+<p><span class="math display">\[
+  c_{ab}(t) = \sum_i f_{i,ab}(t) n_i(t)^{-1}
+\]</span></p>
+<p>summing over populations at time <span class="math inline">\(t\)</span>.</p>
+</section>
+<section id="pair-coalescence-and-structure-3" class="slide level2">
+<h2>Pair coalescence and structure</h2>
+<p>Modelled as an absorbing Markov process,</p>
+<div>
+<ul>
+<li class="fragment"><p><span class="math inline">\((\#\mathrm{populations})^2\)</span> transitory states</p></li>
+<li class="fragment"><p>Absorbing state is coalescence</p></li>
+<li class="fragment"><p>Demographic parameters <span class="math inline">\(\rightarrow\)</span> transition rates</p></li>
+</ul>
+</div>
+</section>
+<section id="pair-coalescence-and-structure-4" class="slide level2">
 <h2>Pair coalescence and structure</h2>
 <div class="r-stack">
 <p><img data-src="fig/pair-rates/pair-rates-0.png" class="fragment current-visible"></p>
@@ -663,7 +694,6 @@ Nov 12, 2024
 <p><img data-src="fig/pair-optim/emp-rates-2.png" class="fragment current-visible"></p>
 <p><img data-src="fig/pair-optim/emp-rates-3.png" class="fragment current-visible"></p>
 <p><img data-src="fig/pair-optim/emp-trio-rates-0.png" class="fragment current-visible"></p>
-<p><img data-src="fig/pair-optim/emp-trio-rates-1.png" class="fragment current-visible"></p>
 <p><img data-src="fig/pair-optim/emp-trio-rates-2.png" class="fragment current-visible"></p>
 <p><img data-src="fig/pair-optim/emp-trio-rates-3.png" class="fragment current-visible"></p>
 </div>
@@ -690,6 +720,16 @@ Nov 12, 2024
 <section id="fitting-to-inferred-rates" class="slide level2">
 <h2>Fitting to inferred rates</h2>
 <div class="r-stack">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/sim-tsinfer/mut-times-0.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="fig/sim-tsinfer/mut-times-1.png" class="fragment current-visible quarto-figure quarto-figure-center" style="width:50.0%"></p>
+</figure>
+</div>
 <p><img data-src="fig/sim-tsinfer/emp-pair-200-0.png" class="fragment current-visible"></p>
 <p><img data-src="fig/sim-tsinfer/emp-pair-200-1.png" class="fragment current-visible"></p>
 <p><img data-src="fig/sim-tsinfer/emp-pair-200-2.png" class="fragment current-visible"></p>

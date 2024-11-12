@@ -309,7 +309,50 @@ Note $c_{ab}^{-1}$ is harmonic average of $n(t)$ over interval
 
 ## Pair coalescence and structure
 
-TODO theory
+Let $u(t)$ be population occupancy at time $t$, e.g.
+
+$$
+  u(0) = \{a, b\}
+$$
+
+in the present day.
+
+
+## Pair coalescence and structure
+
+Co-occupancy probability for population $i$ is,
+
+$$
+  f_{i,ab}(t) = P(u_t = \{i, i\} \mid u_0 = \{a, b\})
+$$
+
+given initial locations.
+
+
+## Pair coalescence and structure
+
+Thus instantaneous "cross-coalescence" rate,
+
+$$
+  c_{ab}(t) = \sum_i f_{i,ab}(t) n_i(t)^{-1}
+$$
+
+summing over populations at time $t$.
+
+
+## Pair coalescence and structure
+
+Modelled as an absorbing Markov process,
+
+::: {.incremental}
+
+- $(\#\mathrm{populations})^2$ transitory states 
+
+- Absorbing state is coalescence
+
+- Demographic parameters $\rightarrow$ transition rates
+
+:::
 
 
 ## Pair coalescence and structure
@@ -371,8 +414,6 @@ TODO theory
 
 ![](fig/pair-optim/emp-trio-rates-0.png){.fragment .current-visible}
 
-![](fig/pair-optim/emp-trio-rates-1.png){.fragment .current-visible}
-
 ![](fig/pair-optim/emp-trio-rates-2.png){.fragment .current-visible}
 
 ![](fig/pair-optim/emp-trio-rates-3.png){.fragment .current-visible}
@@ -399,6 +440,10 @@ TODO theory
 ## Fitting to inferred rates
 
 ::: {.r-stack}
+
+![](fig/sim-tsinfer/mut-times-0.png){.fragment .current-visible width="50%" fig-align="center"}
+
+![](fig/sim-tsinfer/mut-times-1.png){.fragment .current-visible width="50%" fig-align="center"}
 
 ![](fig/sim-tsinfer/emp-pair-200-0.png){.fragment .current-visible}
 

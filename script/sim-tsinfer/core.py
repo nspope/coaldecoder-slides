@@ -20,6 +20,16 @@ def fetch(i, j):
     print(fname)
     return tskit.load(fname)
 
+def fetch_big(i, j):
+    fname = f"/sietch_colab/natep/trio-coal/sims/osclogalt-huge/infer_osclogaltbig_{j}.{i}.trees"
+    print(fname)
+    return tskit.load(fname)
+
+def fetch_himu(i, j):
+    fname = f"/sietch_colab/natep/trio-coal/sims/osclog-altbig/osclogaltbig_{j}.{i}.trees"
+    print(fname)
+    return tskit.load(fname)
+
 def plogis(x):
     return 1. / (1. + np.exp(-x))
 
